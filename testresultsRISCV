@@ -1,0 +1,123 @@
+python3 main_RISCV.py --pre test/RISCV_test6/pre --post test/RISCV_test6/post --p1 test/RISCV_test6/dsl --p1lang dsl --p2 test/RISCV_test6/asm --p2lang asm
+Configuring
+p1 arg= test/RISCV_test6/dsl
+ParsingFiles: p2srli x4, x1, $4
+xor x5, x4, x1
+srli x6, x5, $9
+xor x7, x2, x3
+and x8, x1, x7
+add x9, x6, x8
+
+Group:(W:(ABCD...))
+Constructing DAGs: pre condition
+<dslinstructions.Statement object at 0x7f2b78970ca0>
+
+<dslinstructions.Statement object at 0x7f2b78967a90>
+
+<dslinstructions.Statement object at 0x7f2b78967a30>
+Preprocessing finished
+Preparing for concrete execution
+Program graph to SMT query
+
+[P2TempName.29 = = P2TempName.16 + P2TempName.25, P2TempName.25 == P2.x1.0 & P2TempName.21, P2TempName.21 == P2.x2.0 ^ P2.x3.0, P2TempName.16 == RotateRight(P2TempName.12, 9), P2TempName.12 == P2TempName.7 ^ P2.x1.0, P2TempName.7 == RotateRight(P2.x1.0, 4), P1TempName.6 == P1TempName.2 + P1TempName.5, P1TempName.5 == P1TempName.3 ^ P1TempName.4, P1TempName.4 == P1.a.0 & P1.c.0, P1TempName.3 == P1.a.0 & P1.b.0, P1TempName.2 == P1TempName.0 ^ P1TempName.1, P1TempName.1 == RotateRight(P1.a.0, 9), P1TempName.0 == RotateRight(P1.a.0, 13)]
+
+list of nodes we want to observe the values
+
+P2TempName.29
+P2TempName.25
+P2TempName.21
+P2.x3.0
+P2.x2.0
+P2TempName.16
+P2TempName.12
+P2TempName.7
+P2.x1.0
+P1TempName.6
+P1TempName.5
+P1TempName.4
+P1.c.0
+P1TempName.3
+P1.b.0
+P1TempName.2
+P1TempName.1
+P1TempName.0
+P1.a.0
+Concrete Execution 5/5 : Refining
+candidate equivalence set. These are the set of nodes that are found to be equivalent in P1 and P2
+
+P2TempName.29 , P1TempName.6
+P2TempName.25 , P1TempName.5
+P2.x3.0 , P1.c.0
+P2.x2.0 , P1.b.0
+P2TempName.16 , P1TempName.2
+P2.x1.0 , P1.a.0
+Concrete execution finished
+Verifying node equiv. finished
+p1 is equivalent to p2
+Total Time : 0.266026
+Amount of Time Spent Verifying : 0.062536
+Total Number of Node Pairs to Compare : 6
+Number of Equivalent Pairs of Nodes : 0
+Number of Array Read Nodes Reduced : 0
+tripti@lemma:~/Desktop/sem4/Research/CASM_Verify/CASM-Verify$ python3 main_RISCV.py --pre test/RISCV_test6/pre --post test/RISCV_test6/post --p1 test/RISCV_test6/dsl --p1lang dsl --p2 test/RISCV_test6/asm --p2lang asmpython3 main_RISCV.py --pre test/RISCV_test6_buggy/pre --post test/RISCV_test6_buggy/post --p1 test/RISCV_test6_buggy/dsl --p1lang dsl --p2 test/RISCV_test6_buggy/asm --p2lang asm
+usage: main_RISCV.py [-h] [--pre PRE] [--post POST] [--p1 P1] [--p2 P2] [--p1lang P1LANG] [--p2lang P2LANG] [--verbose] [--gout GOUT]
+main_RISCV.py: error: unrecognized arguments: main_RISCV.py
+tripti@lemma:~/Desktop/sem4/Research/CASM_Verify/CASM-Verify$ python3 main_RISCV.py --pre test/RISCV_test6_buggy/pre --post test/RISCV_test6_buggy/post --p1 test/RISCV_test6_buggy/dsl --p1lang dsl --p2 test/RISCV_test6_buggy/asm --p2lang asm
+Configuring
+p1 arg= test/RISCV_test6_buggy/dsl
+ParsingFiles: p2srli x4, x1, $4
+xor x5, x4, x1
+srli x6, x5, $9
+xor x7, x2, x3
+and x8, x1, x7
+add x9, x6, x8
+
+Group:(W:(ABCD...))
+Constructing DAGs: pre condition
+<dslinstructions.Statement object at 0x7fdc76f6dca0>
+
+<dslinstructions.Statement object at 0x7fdc76f64a90>
+
+<dslinstructions.Statement object at 0x7fdc76f64a30>
+Preprocessing finished
+Preparing for concrete execution
+Program graph to SMT query
+
+[P2TempName.29 = = P2TempName.16 + P2TempName.25, P2TempName.25 == P2.x1.0 & P2TempName.21, P2TempName.21 == P2.x2.0 ^ P2.x3.0, P2TempName.16 == RotateRight(P2TempName.12, 9), P2TempName.12 == P2TempName.7 ^ P2.x1.0, P2TempName.7 == RotateRight(P2.x1.0, 4), P1TempName.6 == P1TempName.2 + P1TempName.5, P1TempName.5 == P1TempName.3 ^ P1TempName.4, P1TempName.4 == P1.a.0 & P1.c.0, P1TempName.3 == P1.a.0 & P1.b.0, P1TempName.2 == P1TempName.0 ^ P1TempName.1, P1TempName.1 == RotateRight(P1.a.0, 9), P1TempName.0 == RotateRight(P1.a.0, 10)]
+
+list of nodes we want to observe the values
+
+P2TempName.29
+P2TempName.25
+P2TempName.21
+P2.x3.0
+P2.x2.0
+P2TempName.16
+P2TempName.12
+P2TempName.7
+P2.x1.0
+P1TempName.6
+P1TempName.5
+P1TempName.4
+P1.c.0
+P1TempName.3
+P1.b.0
+P1TempName.2
+P1TempName.1
+P1TempName.0
+P1.a.0
+Concrete Execution 5/5 : Refining
+candidate equivalence set. These are the set of nodes that are found to be equivalent in P1 and P2
+
+P2TempName.25 , P1TempName.5
+P2.x3.0 , P1.c.0
+P2.x2.0 , P1.b.0
+P2.x1.0 , P1.a.0
+Performing post concrete execution analysis
+p1 is not equivalent to p2 (Reason: Concrete Execution)
+Total Time : 0.194945
+Amount of Time Spent Verifying : 0.000000
+Total Number of Node Pairs to Compare : 0
+Number of Equivalent Pairs of Nodes : 0
+Number of Array Read Nodes Reduced : 0
+tripti@lemma:~/Desktop/sem4/Research/CASM_Verify/CASM-Verify$ 
