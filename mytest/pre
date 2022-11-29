@@ -1,0 +1,8 @@
+@Data{P2.rbp:64, P2.rbp:64 ~ P2.rbp:64 + 7:64};
+@Data{P2.rsi:64, P2.rsi:64 ~ P2.rsi:64 + 7:64};
+@Data{P2.rsp:64, P2.rsp:64 ~ P2.rsp:64 + 7:64};
+
+P1.a == P2.eax; 
+P1.b == P2.ebx;
+P1.c == P2.ecx;
+

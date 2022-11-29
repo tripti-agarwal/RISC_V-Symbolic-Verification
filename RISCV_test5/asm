@@ -1,0 +1,2 @@
+xor x4, x2, x3
+and x5, x1, x4

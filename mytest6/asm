@@ -1,0 +1,5 @@
+movl $1, %eax
+movl $2, %ebx
+movl $3, %ecx
+addl %eax, %ebx
+addl %ebx, %ecx
