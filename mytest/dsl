@@ -1,4 +1,0 @@
-function square(a, b, c)
-{
-    return ((a >> 13) ^ (a >> 9)) + ((a & b) ^ (~a & c));
-}
