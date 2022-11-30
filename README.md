@@ -22,7 +22,7 @@ To install [z3](https://github.com/Z3Prover/z3) manually instead of using python
 ### Manual Installation
 To manually install CASM-Verify, install the [prerequisites](https://github.com/rutgers-apl/CASM-Verify/blob/master/README.md#prerequisite) and clone this repository:
 ```bash
-git clone https://github.com/rutgers-apl/CASM-Verify.git
+https://github.com/tripti-agarwal/RISC_V-Symbolic-Verification.git
 ```
 Now you're ready to use SymDiff_RISC-V.
 
