@@ -32,7 +32,7 @@ For the rest of the readme, we will be using the example in test/RISCV_test6 unl
 
 To verify the assembly implementation(test/sha2rnd/asm) using CASM-Verify, use the following command:
 ```bash
-python3 main.py --pre test/RISCV_test6/pre --post test/RISCV_test6/post --p1 test/RISCV_test6/dsl --p1lang dsl --p2 test/RISCV_test6/asm --p2lang asm --mem-model 32
+python3 main_RISCV.py --pre test/RISCV_test7/pre --post test/RISCV_test7/post --p1 test/RISCV_test7/p1 --p1lang asm --p2 test/RISCV_test7/p2 --p2lang asm
 ```
 There are seven important parameters:
   1) --p1: specifies the file path to the reference implementation.
