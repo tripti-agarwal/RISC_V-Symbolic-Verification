@@ -2,7 +2,7 @@
 
 ## SymDiff_RISC-V
 This tool is is built on top of CASM-Verify [Automatic Equivalence Checking for Assembly Implementations of Cryptography Libraries @ CGO 2019](https://www.cs.rutgers.edu/~santosh.nagarakatte/papers/cgo19-casmverify-preprint.pdf)  which can perform verification of optimized RISC-V pro-
-grams to DSL programs or other RISC-V programs, given the precondition and postcondition.  
+grams to DSL programs or other RISC-V programs, given the precondition and postcondition https://www.overleaf.com/read/kdrjyvzgsqys.  
 
 ## Prerequisite
 The tool requires python3 and the z3 bindings for python3. In ubuntu, the requirements can be installed using the following commands:
