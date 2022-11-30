@@ -1,3 +1,0 @@
-srli x4, x1, $4
-xor x5, x4, x1
-srli x6, x5, $9
