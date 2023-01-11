@@ -1,0 +1,34 @@
+// Program Graph
+digraph "program-graph" {
+	"P2TempName.29" [label="OpCode.PLUS"]
+	"P2TempName.29" -> "P2TempName.16"
+	"P2TempName.29" -> "P2TempName.25"
+	"P2TempName.25" [label="OpCode.AND"]
+	"P2TempName.25" -> "P2.x1.0"
+	"P2TempName.25" -> "P2TempName.21"
+	"P2TempName.21" [label="OpCode.XOR"]
+	"P2TempName.21" -> "P2.x2.0"
+	"P2TempName.21" -> "P2.x3.0"
+	"P2.x3.0"
+	"P2.x2.0"
+	"P2TempName.16" [label="OpCode.ROR"]
+	"P2TempName.16" -> "P2TempName.12"
+	"P2TempName.16" -> 9
+	"P2TempName.12" [label="OpCode.XOR"]
+	"P2TempName.12" -> "P2TempName.7"
+	"P2TempName.12" -> "P2.x1.0"
+	"P2TempName.7" [label="OpCode.ROR"]
+	"P2TempName.7" -> "P2.x1.0"
+	"P2TempName.7" -> 4
+	"P2.x1.0"
+	"P1TempName.6" [label="OpCode.PLUS"]
+	"P1TempName.5" [label="OpCode.XOR"]
+	"P1TempName.4" [label="OpCode.AND"]
+	"P1.c.0"
+	"P1TempName.3" [label="OpCode.AND"]
+	"P1.b.0"
+	"P1TempName.2" [label="OpCode.XOR"]
+	"P1TempName.1" [label="OpCode.ROR"]
+	"P1TempName.0" [label="OpCode.ROR"]
+	"P1.a.0"
+}

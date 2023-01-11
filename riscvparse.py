@@ -48,8 +48,8 @@ immediate = pp.Combine(pp.Suppress("$") + pp.Literal("0x") + pp.Word(pp.hexnums)
     pp.Suppress("$") + pp.Optional("-") + pp.Word(pp.nums)
 )
 
-
-Operands = register | immediate
+label = pp.Combine(pp.Literal("L$") + pp.Word(pp.alphas, pp.alphanums + "_"))
+Operands = register | immediate | label
 
 UnOpInstList = pp.Word(pp.alphas)
 
@@ -59,7 +59,13 @@ BinOpInstList = pp.Word(pp.alphas)
 
 BinOpInstructions = BinOpInstList + Operands + pp.Suppress(",") + Operands + pp.Suppress(",") + Operands
 
-RISCVInst = pp.Group(BinOpInstructions | UnOpInstructions)
+# JumpInstList = pp.Word("j", pp.alphas)
+
+# JumpInstructions = JumpInstList + label
+
+BranchInstList = pp.Word(pp.alphas)
+BranchInstructions = BranchInstList + Operands + pp.alphas
+RISCVInst = pp.Group(BinOpInstructions | UnOpInstructions | BranchInstructions)
 
 RISCVLanguage = pp.OneOrMore(RISCVInst)
 

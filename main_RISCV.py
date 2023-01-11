@@ -8,9 +8,96 @@ from mainhelperriscv import *
 import dslparse
 from SampleGenerator import *
 import depgraph
-import graphviz
+
+import networkx as nx
+
+import pydot
+
 
 sys.setrecursionlimit(10000)
+
+
+def visualization(programGraph, name, destination_for_graphs):
+    print("\n\nvisualization of initial graphs\n\n")
+
+    dot = pydot.Dot("program-graph", comment="Program Graph")
+
+    for i in range(0, len(programGraph.vertices)):
+
+        if str(((programGraph.vertices)[i]).operator) != "OpCode.NONE" and (
+            ((programGraph.vertices)[i]).name == "P1TempName" or ((programGraph.vertices)[i]).programOrigin == "P1"
+        ):
+            mynode = pydot.Node(str((programGraph.vertices)[i]))
+            dot.add_node(mynode)
+        elif ((programGraph.vertices)[i]).name == "P1TempName" or ((programGraph.vertices)[i]).programOrigin == "P1":
+
+            mynode = pydot.Node(str((programGraph.vertices)[i]))
+            dot.add_node(mynode)
+        if ((programGraph.vertices)[i]).operands != None and (
+            ((programGraph.vertices)[i]).name == "P1TempName" or ((programGraph.vertices)[i]).programOrigin == "P1"
+        ):
+            my_edge1 = pydot.Edge(str((programGraph.vertices)[i]), str(((programGraph.vertices)[i]).operands[0]))
+            # dot.node(str((programGraph.vertices)[i]), str(((programGraph.vertices)[i]).operator))
+            dot.add_edge(my_edge1)
+            my_edge2 = pydot.Edge(str((programGraph.vertices)[i]), str(((programGraph.vertices)[i]).operands[1]))
+
+            dot.add_edge(my_edge2)
+
+    my_networkx_graph_P1 = nx.drawing.nx_pydot.from_pydot(dot)
+
+    nodes = my_networkx_graph_P1.nodes()
+
+    for node in nodes:
+        if node.isnumeric():
+            mapping = {node: "P1." + node}
+            my_networkx_graph_P1 = nx.relabel_nodes(my_networkx_graph_P1, mapping)
+
+    if name == "initial":
+        PG = nx.nx_pydot.to_pydot(my_networkx_graph_P1)
+        PG.write_png(destination_for_graphs + "P1_" + name + ".png")
+        dot = pydot.Dot("program-graph", comment="Program Graph")
+
+    for i in range(0, len(programGraph.vertices)):
+
+        if str(((programGraph.vertices)[i]).operator) != "OpCode.NONE" and (
+            ((programGraph.vertices)[i]).name == "P2TempName" or ((programGraph.vertices)[i]).programOrigin == "P2"
+        ):
+            mynode = pydot.Node(str((programGraph.vertices)[i]))
+            dot.add_node(mynode)
+        elif ((programGraph.vertices)[i]).name == "P2TempName" or ((programGraph.vertices)[i]).programOrigin == "P2":
+
+            mynode = pydot.Node(str((programGraph.vertices)[i]))
+            dot.add_node(mynode)
+        if ((programGraph.vertices)[i]).operands != None and (
+            ((programGraph.vertices)[i]).name == "P2TempName" or ((programGraph.vertices)[i]).programOrigin == "P2"
+        ):
+            my_edge1 = pydot.Edge(str((programGraph.vertices)[i]), str(((programGraph.vertices)[i]).operands[0]))
+            # dot.node(str((programGraph.vertices)[i]), str(((programGraph.vertices)[i]).operator))
+            dot.add_edge(my_edge1)
+            my_edge2 = pydot.Edge(str((programGraph.vertices)[i]), str(((programGraph.vertices)[i]).operands[1]))
+
+            dot.add_edge(my_edge2)
+
+    my_networkx_graph_P2 = nx.drawing.nx_pydot.from_pydot(dot)
+    nodes = my_networkx_graph_P2.nodes()
+
+    for node in nodes:
+        if node.isnumeric():
+            mapping = {node: "P2." + node}
+            my_networkx_graph_P2 = nx.relabel_nodes(my_networkx_graph_P2, mapping)
+    if name == "initial":
+        PG = nx.nx_pydot.to_pydot(my_networkx_graph_P2)
+        PG.write_png(destination_for_graphs + "P2_" + name + ".png")
+    else:
+        PG = nx.nx_pydot.to_pydot(my_networkx_graph_P2)
+        PG.write_png(destination_for_graphs + name + ".png")
+
+    # U = nx.Graph()
+    # U = nx.disjoint_union(my_networkx_graph_P2, my_networkx_graph_P1)
+    # UG = nx.nx_pydot.to_pydot(U)
+    # UG.write_png("combined.png")
+    print("Visualization complete and initial graphs are saved as P1.png, P2.png and combined.png\n\n")
+
 
 # Command line arguments parsing
 configRISCV.analysisStartTime = time.time()
@@ -49,7 +136,8 @@ preString = readFile(args.pre)
 p1String = readFile(args.p1)
 p2String = readFile(args.p2)
 postString = readFile(args.post)
-
+filename = args.pre.split("/")
+destination_for_graphs = filename[0] + "/" + filename[1] + "/"
 # Turn everything into dslinstruction
 ansiCode.PrintOnThisLineBold("ParsingFiles: ")
 ansiCode.Print("pre condition")
@@ -95,8 +183,23 @@ preAst, dataRegionAst = ExtractDataRegions(preAst)
 ####################################################################################################
 ansiCode.PrintOnThisLineBold("Constructing DAGs: ")
 dataRegionGraph, preGraph, programGraph, postGraph = GetGraphsFromAsts(dataRegionAst, preAst, p1Ast, p2Ast, postAst)
+print("\n\nProgram graphs\n\n")
+# for i in range(0, len(programGraph.vertices)):
+#     print((programGraph.vertices)[i])
+#     if ((programGraph.vertices)[i]).operands != None and (
+#         ((programGraph.vertices)[i]).name == "P2TempName" or ((programGraph.vertices)[i]).programOrigin == "P2"
+#     ):
+#         print(
+#             (programGraph.vertices)[i],
+#             ",",
+#             ((programGraph.vertices)[i]).operands[0],
+#             ",",
+#             ((programGraph.vertices)[i]).operands[1],
+#             ",",
+#             type(str(((programGraph.vertices)[i]).operator)),
+#         )
+# sprint(((programGraph.vertices)[i]).operator)
 ansiCode.PrintOnThisLine("Preprocessing finished\n")
-
 
 # add dot generator to show graphs --- first do this
 
@@ -159,8 +262,8 @@ for bt in P2BoundTuple:
     preExpr.append(z3.ULT(bt[0], bt[1]))
 
 programExpr = [x for x in map(lambda x: x.VertexOperationToSmt(), programGraph.vertices) if x != None]
-print("\nProgram graph to SMT query\n")
-print(programExpr)
+# print("\nProgram graph to SMT query\n")
+# print(programExpr)
 
 
 ###################################################
@@ -172,24 +275,31 @@ varList = list(
         programGraph.vertices,
     )
 )
-print("\nlist of nodes we want to observe the values\n")
-for varlist in range(0, len(varList)):
-    print(" ", varList[varlist])
+# print("\nlist of nodes we want to observe the values\n")
+# for varlist in range(0, len(varList)):
+#     print(" ", varList[varlist])
 
 candiEquivSet = [list(varList)]
 executedValueDict = {k: [] for k in varList}
-
-print(executedValueDict.keys())
+# print("executed Value Dict")
+# for exdict in range(0, len(list(executedValueDict.keys()))):
+#     print(list(executedValueDict.keys())[exdict])
 ###################################################
 # Do Execution simulation.
 for i, si in enumerate(sampGen.sampleInputs):
     ansiCode.PrintOnThisLineBold("Concrete Execution %d/%d : " % ((i + 1), len(sampGen.sampleInputs)))
     ansiCode.Print("Executing")
-    modelDict = SymbolicExecAndGetModelDict(programExpr, preExpr, si, varList)
+    modelDict = SymbolicExecAndGetModelDict(programExpr, preExpr, si, varList)  # conversion to SMT query
     ansiCode.PrintFromLeft("Retrieving values", 9)
     UpdateExecutedValueDict(executedValueDict, modelDict)
     ansiCode.PrintFromLeft("Refining", 17)
     candiEquivSet = RefineCandidateEquivSet(candiEquivSet, modelDict)
+    # print(candiEquivSet[i][0], ",", candiEquivSet[i][1])
+
+
+# -------------------------------------------------------------------------------------------------------------------------------------------------
+visualization(programGraph, "initial", destination_for_graphs)
+# ---------------------------------------------------------------------------------------------------------------------------
 print("\ncandidate equivalence set. These are the set of nodes that are found to be equivalent in P1 and P2\n")
 
 for eqset in range(0, len(candiEquivSet)):
@@ -248,12 +358,17 @@ for i, ceSet in enumerate(candiEquivSet):
     for v in ceSet:
         v.equivClassId = i
 candiEquivSet = {k: v for k, v in enumerate(candiEquivSet)}
+print("\n\nUpdated list of nodes of that might be equivalent\n\n")
+for eqset in range(0, len(candiEquivSet)):
+    print(candiEquivSet[eqset][0], ",", candiEquivSet[eqset][1])
 
+print("\n\n")
 ###################################################
 # Determine if it's worth continuing to check whether the classified variables are equivalent
 isWorthContinuing = True
 for outEqVertex in postGraph.vertices:
     assert outEqVertex.operator == depgraph.VertexNode.OpCode.EQ
+
     if (
         outEqVertex.operands[0].equivClassId == None
         or outEqVertex.operands[1].equivClassId == None
@@ -285,6 +400,7 @@ else:
     # Get the list of vertices to find confirmed equivalence set, and sort them by topological rank.
     verticesToConfirm = list(reduce(lambda x, y: x + y, candiEquivSet.values(), []))
     verticesToConfirm.sort(key=lambda x: x.topRank)
+
     del candiEquivSet
 
     counter = 1
@@ -293,7 +409,9 @@ else:
     configRISCV.equivNodeNum = 0
     configRISCV.noEquivNodeNum = 0
     configRISCV.readNodeNum = 0
+    iteration = 0
     while verticesToConfirm != []:
+        iteration += 1
         ansiCode.PrintOnThisLineBold(
             "Verifying node equiv #%d/%d (%s%d%s-%s%d%s)"
             % (
@@ -313,6 +431,18 @@ else:
         programGraph, confEquivSet = ClassifyVertexToConfEquivSet(
             nextVertex, programGraph, confEquivSet, preExpr, counter
         )
+        # for i in range(0, len(programGraph.vertices)):
+
+        #     if ((programGraph.vertices)[i]).operands != None:
+        #         print(
+        #             (programGraph.vertices)[i],
+        #             ",",
+        #             ((programGraph.vertices)[i]).operands[0],
+        #             ",",
+        #             ((programGraph.vertices)[i]).operands[1],
+        #         )
+        visualization(programGraph, str(iteration), destination_for_graphs)
+
         configRISCV.totalVerificationTime = configRISCV.totalVerificationTime + (time.time() - verificationStartTime)
 
         counter = counter + 1

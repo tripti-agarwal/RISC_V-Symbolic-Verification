@@ -298,6 +298,11 @@ def GetGraphsFromAsts(dataRegionAst, preAst, specAst, asmAst, postAst):
     # Caclualte Topological Ranking
     ansiCode.Print("%s%sCalculating topological ranking" % (ansiCode.Left(13), ansiCode.ClearLine(0)))
     CalculateTopologicalRanking(programGraph)
+    # for i in range(0, len(variables)):
+    #     if variables[i].operands != None:
+    #         for j in range(len(variables[i].operands)):
+
+    #             print(variables[i].operands[j])
 
     return dataRegionGraph, preGraph, programGraph, postGraph
 
@@ -377,6 +382,7 @@ def RefineCandidateEquivSet(candiEquivSet, sampleResult):
         for key in tempDictBucket:
             if len(tempDictBucket[key]) > 1:
                 newCandiEquivSet.append(tempDictBucket[key])
+                print(tempDictBucket[key][0], ",", tempDictBucket[key][1])
     return newCandiEquivSet
 
 

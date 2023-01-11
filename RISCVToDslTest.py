@@ -1,7 +1,7 @@
 import riscvparse
 import riscvtodsl
 
-test = "srl x5, x6, x7"
+test = "srl, x4, x1, x3"
 
 insts = riscvparse.RISCVParse(test)
 print(insts)
