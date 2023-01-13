@@ -59,13 +59,13 @@ BinOpInstList = pp.Word(pp.alphas)
 
 BinOpInstructions = BinOpInstList + Operands + pp.Suppress(",") + Operands + pp.Suppress(",") + Operands
 
-# JumpInstList = pp.Word("j", pp.alphas)
+JumpInstList = pp.Word("j", pp.alphas)
 
-# JumpInstructions = JumpInstList + label
+JumpInstructions = JumpInstList + label
 
 BranchInstList = pp.Word(pp.alphas)
 BranchInstructions = BranchInstList + Operands + pp.alphas
-RISCVInst = pp.Group(BinOpInstructions | UnOpInstructions | BranchInstructions)
+RISCVInst = pp.Group(BinOpInstructions | UnOpInstructions | BranchInstructions | JumpInstructions)
 
 RISCVLanguage = pp.OneOrMore(RISCVInst)
 

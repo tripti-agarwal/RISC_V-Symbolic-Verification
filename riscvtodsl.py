@@ -697,6 +697,39 @@ def ConvertBranchLess(x):
     return dslparse.dslToAst(tempString)
 
 
+def ConvertJump(x):
+    destList, tempString = ConvertOperand(x[1])
+    dest = destList[0]
+    tempString = "jmp 1:1 == 1:1 ? " + dest + ";"
+    jmpAst = dslparse.dslToAst(tempString)
+    return jmpAst
+
+
+# def ConvertJnz(x) :
+#     destList, tempString = ConvertOperand(x[1])
+#     dest = destList[0]
+#     tempString = tempString + "jmp zf:1 == 0:1 ? " + dest + " : L$NONE;"
+
+#     jnzAst = dslparse.dslToAst(tempString)
+#     return jnzAst
+
+# def ConvertJz(x) :
+#     destList, tempString = ConvertOperand(x[1])
+#     dest = destList[0]
+#     tempString = "jmp zf:1 == 1:1 ? " + dest + " : L$NONE;"
+
+#     jzAst= dslparse.dslToAst(tempString)
+#     return jzAst
+
+# def ConvertJmp(x) :
+#     destList, tempString = ConvertOperand(x[1])
+#     dest = destList[0]
+#     tempString = "jmp 1:1 == 1:1 ? " + dest + " : L$NONE;"
+
+#     jmpAst = dslparse.dslToAst(tempString)
+#     return jmpAst
+
+
 def ConvertAddw(x):
     sys.exit("Please implement Convert for: %s" % (x))
 
@@ -726,12 +759,21 @@ def ConvertToDsl(RISCVInsts):
             if RISCVI[2] == "x0":
                 RISCVI[2] = "0"
             convFunc = convertSwitcherUnary.get(RISCVI[0], ConvertDefault)
+        if len(RISCVI) == 2:
+            if Is32Register(RISCVI):
+                sys.exit("needs to be a label, label always start with L here")
+            if isImmediate(RISCVI):
+                sys.exit("needs to be a label, label always start with L here")
+            convFunc = convertSwitcherJump.get(RISCVI[0], ConvertDefault)
         insts = convFunc(RISCVI)
         retList.extend(insts)
 
     return retList
 
 
+convertSwitcherJump = {
+    "jmp": ConvertJump,
+}
 convertSwitcherUnary = {
     "ld": ConvertLoad,
     "li": ConvertLoadI,

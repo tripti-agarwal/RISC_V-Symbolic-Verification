@@ -47,3 +47,8 @@ def Is32Register(o):
     if isinstance(o, str) and o in reg32Rev:
         return True
     return False
+
+
+def ConvertOperand(o, tempString=""):
+    if o.startswith("L$"):
+        return [o], tempString
