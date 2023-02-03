@@ -1,0 +1,15 @@
+w = m;
+sigma1 = (e >>> 6) ^ (e >>> 11) ^ (e >>> 25);
+ch = (e & f) ^ (!e & g);
+sigma0 = (a >>> 2) ^ (a >>> 13) ^ (a >>> 22);
+maj = (a & b) ^ (a & c) ^ (b & c);
+t1 = h + sigma1 + ch + k + w;
+t2 = sigma0 + maj;
+h = g;
+g = f;
+f = e;
+e = d + t1;
+d = c;
+c = b;
+b = a;
+a = t1 + t2;

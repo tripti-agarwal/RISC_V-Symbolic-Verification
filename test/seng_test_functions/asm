@@ -1,0 +1,34 @@
+ld x12, x6
+ld x13, x7          
+srl x13, x17, $6
+srl x14, x17, $11
+srl x15, x17, $25
+xor x13, x13, x14
+xor x13, x13, x25   
+and x14, x7, x8
+xori x25, x7, $-1   
+and x25, x25, x9
+xor x14, x25, x14
+srli x15, x10, $2
+srli x16, x10, $13
+xor  x15, x15, x16
+srli x16, x10, $22
+xor  x15, x15, x16 
+and  x16, x10, x11
+and  x17, x10, x19
+xor  x16, x16, x17
+and  x18, x11, x19
+xor  x16, x16, x18  
+add  x23, x13, x26 
+add  x23, x23, x14 
+add  x23, x23, x12
+add  x23, x23, x27  
+add  x16, x15, x16  
+ld   x26, x9                
+ld   x9,  x8
+ld   x8,  x7
+add  x7,  x29, x23
+ld   x29, x19               
+ld   x19, x11               
+ld   x11, x10              
+add  x10, x28, x23         

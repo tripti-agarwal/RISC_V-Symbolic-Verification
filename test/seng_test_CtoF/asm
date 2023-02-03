@@ -1,0 +1,5 @@
+subi x4, x3, $32
+slli x4, x4, $2
+add x4, x4, x4
+srli x4, x4, $3
+sub x4, x4, x4

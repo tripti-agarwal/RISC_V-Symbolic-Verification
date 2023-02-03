@@ -1,0 +1,1 @@
+python3 main_RISCV.py --pre test/seng_test_fibonacci/pre --post test/seng_test_fibonacci/post --p1 test/seng_test_fibonacci/dsl --p1lang dsl --p2 test/seng_test_fibonacci/asm --p2lang asm

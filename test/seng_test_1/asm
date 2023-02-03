@@ -1,0 +1,5 @@
+li x5, $20
+ld x4, x5
+ld x3, x4
+and x2, x4, x3
+xor x2, x2, x5

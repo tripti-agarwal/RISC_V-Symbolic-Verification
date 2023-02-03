@@ -1,0 +1,9 @@
+ld x3, x1
+ld x4, x2
+
+add x3, x3, x4
+add x4, x3, x4
+add x3, x3, x4
+add x4, x3, x4
+add x3, x3, x4
+add x4, x3, x4
