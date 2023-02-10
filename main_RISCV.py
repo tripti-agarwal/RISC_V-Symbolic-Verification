@@ -260,10 +260,10 @@ preExpr.append(z3.Or(mbsQueryList))
 
 for bt in P2BoundTuple:
     preExpr.append(z3.ULT(bt[0], bt[1]))
-
+print("\n\nPre Expression=", preExpr)
 programExpr = [x for x in map(lambda x: x.VertexOperationToSmt(), programGraph.vertices) if x != None]
 # print("\nProgram graph to SMT query\n")
-# print(programExpr)
+print("\n\nProgram expression=", programExpr)
 
 
 ###################################################

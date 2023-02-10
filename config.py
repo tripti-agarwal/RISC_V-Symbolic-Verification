@@ -80,7 +80,7 @@ def ProgLangArgToProgLangCode(arg):
     return None
 
 
-def ProgLangCodeToProgLangArg(code):
+def ProgLangCodeToProgLangArg(arg):
     if arg in plangDictRev:
         return plangDictRev[arg]
     return None
@@ -103,8 +103,8 @@ def VerifModeArgToVerifModeCode(arg):
 
 
 def VerifModeCodeToVerifModeArg(arg):
-    if arg in verifModeDictRev:
-        return verifModeDictRev[arg]
+    if arg in verifModelDictRev:
+        return verifModelDictRev[arg]
     return None
 
 

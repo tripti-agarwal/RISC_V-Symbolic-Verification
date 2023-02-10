@@ -1,8 +1,9 @@
 import riscvparse
 import riscvtodsl
 
-test = "srli x2, x3, $1"
+test1 = "srli x3, x4, $50"
 
+test = test1
 insts = riscvparse.RISCVParse(test)
 print(insts)
 dsl = riscvtodsl.ConvertToDsl(insts)

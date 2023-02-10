@@ -1,3 +1,7 @@
+import pyparse.pyparsing as pp
+import config
+import sys
+
 reg32 = {
     0: "x0",
     1: "x1",
@@ -49,6 +53,182 @@ def Is32Register(o):
     return False
 
 
-def ConvertOperand(o, tempString=""):
-    if o.startswith("L$"):
+def IsMemory(o):
+    if isinstance(o, pp.ParseResults) or isinstance(o, list):
+        return True
+    return False
+
+
+def Get32BitRepFromRegister(o):
+    if isinstance(o, str) and o in reg32Rev:
+        return [o]
+    else:
+        sys.exit("Get32BitRepFromRegister: " + o + "is not a register I can recognize")
+
+
+# Gets the correct representation of the register. Adds "bitsize" syntax as well.
+def GetRegister(o, bitlength=32):
+    if bitlength == 32:
+        return Get32BitRepFromRegister(o)
+
+
+def CalculateAddress(o):
+    # ['OFFSET', 'rax']
+    # ['OFFSET', 'rax', 'rdx']
+    # ['OFFSET', 'rax', 'rdx', '8']
+    # ['OFFSET', 'BASE', 'rdx', '8']
+
+    assert len(o) > 1
+    regSize = ":32"
+    # We will always get ['OFFSET', 'BASE']
+    addrString = ""
+    if o[1] != "BASE":
+        # Then we have base register
+        baseReg = ""
+        if config.Is64BitArch():
+            baseReg = Get64BitRepFromRegister(o[1])[0]
+        elif config.Is32BitArch():
+            baseReg = Get32BitRepFromRegister(o[1])[0]
+        if baseReg != "":
+            addrString = addrString + baseReg
+
+    shiftValue = 0
+    if len(o) == 4:
+        # Addressing mode specifies shiftValue. By definition, o[3] can only be 1, 2, 4, or 8
+        if o[3] == "1":
+            shiftValue = 0
+        elif o[3] == "2":
+            shiftValue = 1
+        elif o[3] == "4":
+            shiftValue = 2
+        elif o[3] == "8":
+            shiftValue = 3
+        else:
+            sys.exit("Illegal index multiplier value: %s" + (o))
+
+    if len(o) >= 3:
+        # Then we have to add additional register
+        if config.Is64BitArch():
+            indexReg = Get64BitRepFromRegister(o[2])[0]
+        elif config.Is32BitArch():
+            indexReg = Get32BitRepFromRegister(o[2])[0]
+
+        if addrString != "":
+            addrString = addrString + " + "
+        if shiftValue == 0:
+            addrString = addrString + indexReg
+        else:
+            addrString = addrString + "(" + indexReg + " << " + str(shiftValue) + regSize + ")"
+
+    if o[0] != "OFFSET" and o[0] != "0":
+        addrString = addrString + " + " + o[0] + regSize
+
+    return addrString
+
+
+def ConvertOperand(o, tempString="", bitlength=32):
+    # This is memory addressing mode.
+    if isinstance(o, pp.ParseResults) or isinstance(o, list):
+        retList = []
+        # Identify the bitlength of the register used for memory access.
+        regSize = ":32"
+
+        # Add base register
+        taddr = o[1] + regSize
+
+        # Add index and scale
+        if len(o) == 4:
+            index = o[2] + regSize
+            multiplier = int(o[3])
+            if multiplier == 1:
+                taddr = taddr + " + " + index
+            elif multiplier == 2:
+                taddr = taddr + " + (" + index + " << 1" + regSize + ") "
+            elif multiplier == 4:
+                taddr = taddr + " + (" + index + " << 2" + regSize + ") "
+            elif multiplier == 8:
+                taddr = taddr + " + (" + index + " << 3" + regSize + ") "
+            else:
+                taddr = taddr + " + " + index
+
+        offset = 0 if o[0] == "OFFSET" else int(o[0])
+        if offset % 4 == 0:
+            # Then we have no problem.
+            if offset != 0:
+                taddr = taddr + " + " + str(offset) + regSize
+            forceSizeAdd = 0
+            while forceSizeAdd < 128:
+                # for example if bitlength = 32, forceSize = 128
+                # we should get +0, +4, +8, and +12
+                finalAddr = taddr + " + " + str(int(forceSizeAdd / 8)) + regSize
+                retList.append("mem[" + finalAddr + "]")
+                forceSizeAdd = forceSizeAdd + bitlength
+            return retList, tempString
+        else:
+            # We gotta start thinking about offset memory loads.
+            newoffset = int(offset / 4)
+            offsetrem = offset % 4
+            taddrlow = taddr if newoffset == 0 else (taddr + " + " + str(newoffset) + regSize)
+            taddrhigh = (
+                (taddr + " + 4" + regSize + " ") if newoffset == 0 else (taddr + " + " + str(newoffset + 4) + regSize)
+            )
+            while forceSize > 0:
+                forceoffset = int((forceSize - bitlength) / 8)
+                if not forceoffset == 0:
+                    taddrlow = taddrlow + " + " + str(forceoffset) + regSize
+                    taddrhigh = taddrhigh + " + " + str(forceoffset) + regSize
+                # example: 3(%r14) -> merge(split(mem[r14 + 4], 0, 23), split(mem[r14], 24, 31))
+                tempString = (
+                    tempString
+                    + "cavtmemhigh"
+                    + str(forceoffset)
+                    + ":"
+                    + str(offsetrem * 8)
+                    + " = split(mem["
+                    + taddrhigh
+                    + "], 0, "
+                    + str(offsetrem * 8 - 1)
+                    + ");\n"
+                )
+
+                tempString = (
+                    tempString
+                    + "cavtmemlow"
+                    + str(forceoffset)
+                    + ":"
+                    + str((4 - offsetrem) * 8)
+                    + " = split(mem["
+                    + taddrlow
+                    + "], "
+                    + str(offsetrem * 8)
+                    + ", 31);\n"
+                )
+
+                tempString = (
+                    tempString
+                    + "cavtmem"
+                    + str(forceoffset)
+                    + " = merge(cavtmemhigh"
+                    + str(forceoffset)
+                    + ":"
+                    + str(offsetrem * 8)
+                    + ", cavtmemlow"
+                    + str(forceoffset)
+                    + ":"
+                    + str((4 - offset) * 8)
+                    + ");\n"
+                )
+
+                retList.append("cavtmem" + str(forceoffset))
+                forceSize = forceSize - bitlength
+            return retList, tempString
+    elif o.startswith("L$"):
         return [o], tempString
+    elif isImmediate(o):
+        if bitlength > 32:
+            return [o + ":" + str(bitlength)], tempString
+        return [o], tempString
+    elif o in reg32Rev:
+        return GetRegister(o, bitlength), tempString
+    else:
+        sys.exit("I don't know what", o, "is in x86 operand.")

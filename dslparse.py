@@ -81,6 +81,13 @@ def parseMacro(s, loc, toks):
 
 
 def parseLoop(s, loc, toks):
+    print("parseLoop=", toks)
+    temp = di.Loop(toks[0], toks[1], toks[2], toks[3:])
+    return temp
+
+
+def parse2Loop(s, loc, toks):
+    print("parse2Loop=", toks)
     temp = di.Loop(toks[0], toks[1], toks[2], toks[3:])
     return temp
 
@@ -281,7 +288,22 @@ forloop = (
     + pp.Suppress(pp.Literal("}"))
 ).setParseAction(parseLoop)
 
+for2loop = (
+    pp.Suppress(pp.Literal("for2"))
+    + pp.Suppress(pp.Literal("("))
+    + factor
+    + pp.Suppress(pp.Literal("from"))
+    + factor
+    + pp.Suppress(pp.Literal("to"))
+    + factor
+    + pp.Suppress(pp.Literal(")"))
+    + pp.Suppress(pp.Literal("{"))
+    + pp.OneOrMore(stmt)
+    + pp.Suppress(pp.Literal("}"))
+).setParseAction(parse2Loop)
+
 jmpStmt = (pp.Literal("jmp") + ifExpression + pp.Suppress(pp.Literal(";"))).setParseAction(pushJumpStmt)
+
 
 HeapInfo = (
     pp.Suppress("@Data{")
@@ -293,7 +315,7 @@ HeapInfo = (
     + pp.Suppress("};")
 ).setParseAction(parseDataRegion)
 
-progComponent = HeapInfo | forloop | function | macro | jmpStmt | stmt
+progComponent = HeapInfo | forloop | function | macro | jmpStmt | for2loop | stmt
 progComponentList = pp.OneOrMore(progComponent)
 program = progComponentList
 

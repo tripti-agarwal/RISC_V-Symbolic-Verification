@@ -4,6 +4,7 @@ import sys
 from RISCVtodslHelper import *
 import config
 import dslparse
+import dslinstructions
 
 
 def SetupOperandForShifts32BitRegister(x):
@@ -68,46 +69,56 @@ def SetupOperand32BitRegister(x):
             source2 = x[3]
             addr = ""
 
-        return dest, source1, source2, oldDest, addr, tempString
+            return dest, source1, source2, oldDest, addr, tempString
 
+        if Is32Register(x[1]) and (Is32Register(x[2])):
+            dest = x[1]
+            source1 = x[2]
+            source2 = x[3]
+            addr = ""
+
+            return dest, source1, source2, oldDest, addr, tempString
     if len(x) == 3:
         if Is32Register(x[1]) and Is32Register(x[2]):
             dest = x[1]
             source = x[2]
             addr = ""
 
-        return dest, source, oldDest, addr, tempString
+            return dest, source, oldDest, addr, tempString
 
 
 def SetupOperand32BitImmediate(x):
     oldDest = "oldDest"
     tempString = ""
+    dest = x[1]
+    addr = ""
     if len(x) == 4:
         if Is32Register(x[1]) and (Is32Register(x[2]) or isImmediate(x[3])):
-            dest = x[1]
             source1 = x[2]
             source2 = x[3]
-            addr = ""
-        if Is32Register(x[1]) and (isImmediate(x[2]) or isImmediate(x[3])):
-            dest = x[1]
-            source1 = x[2]
-            source2 = x[3]
-            addr = ""
-        if Is32Register(x[1]) and (isImmediate(x[2]) or Is32Register(x[3])):
-            dest = x[1]
-            source1 = x[2]
-            source2 = x[3]
-            addr = ""
 
-        return dest, source1, source2, oldDest, addr, tempString
+            return dest, source1, source2, oldDest, addr, tempString
+
+        if Is32Register(x[1]) and (isImmediate(x[2]) or isImmediate(x[3])):
+
+            source1 = x[2]
+            source2 = x[3]
+
+            return dest, source1, source2, oldDest, addr, tempString
+
+        if Is32Register(x[1]) and (isImmediate(x[2]) or Is32Register(x[3])):
+
+            source1 = x[2]
+            source2 = x[3]
+
+            return dest, source1, source2, oldDest, addr, tempString
 
     if len(x) == 3:
         if Is32Register(x[1]) and isImmediate(x[2]):
-            dest = x[1]
-            source = x[2]
-            addr = ""
 
-        return dest, source, oldDest, addr, tempString
+            source = x[2]
+
+            return dest, source, oldDest, addr, tempString
 
 
 # right now there is only register binary operations
@@ -142,21 +153,41 @@ def SaveToOperand32BitImmediate(x, dest, source1, source2, oldDest, addr):
         sys.exit("SetupOperand32Bit operand error: %s" % (x))
 
 
+def ConvertCmpl(x):
+    # Right side - left side.
+    # 32 bit cmp operation
+    sourceList, tempString = ConvertOperand(x[2])
+    source = sourceList[0]
+    destList, tempString = ConvertOperand(x[3], tempString)
+    dest = destList[0]
+    tempString = tempString + "temp = " + dest + " - " + source + ";\n"
+    # zf
+    tempString = tempString + "zf:1 = temp == 0 ? 1:1 : 0:1;\n"
+    # of : (left side sign bit) != (right side sign bit) and (right side sign bit) == (result sign bit)
+    tempString = tempString + "of_part1:1 = split(" + source + ", 31, 31) != split(" + dest + ", 31, 31) ? 1:1 : 0:1;\n"
+    tempString = tempString + "of_part2:1 = split(" + dest + ", 31, 31) == split(temp, 31, 31) ? 1:1 : 0:1;\n"
+    tempString = tempString + "of:1 = of_part1:1 & of_part2:1;\n"
+    # cf : most significant bit requires carry if source is greater than dest.
+    tempString = tempString + "cf:1 = " + source + " > " + dest + " ? 1:1 : 0:1;\n"
+    # sf
+    tempString = tempString + "sf:1 = split(temp, 31, 31);\n"
+
+    cmpAst = dslparse.dslToAst(tempString)
+    return cmpAst
+
+
 def ConvertAdd(x):
-    dest, source1, source2, oldDest, addr, tempString = SetupOperand32BitRegister(x)
-    tempString = tempString + (
-        oldDest
-        + " = "
-        + dest
-        + ";\n"
-        + dest
-        + " = "
-        + source1
-        + " + "
-        + source2
-        + ";\n"
-        + SaveToOperand32BitRegister(x, dest, source1, source2, oldDest, addr)
-    )
+    sourceList1, tempString = ConvertOperand(x[2])
+    source1 = sourceList1[0]
+
+    sourceList2, tempString = ConvertOperand(x[3], tempString)
+    source2 = sourceList2[0]
+
+    destList, tempString = ConvertOperand(x[1], tempString)
+    dest = destList[0]
+
+    tempString = tempString + "oldDest = " + dest + ";\n"
+    tempString = tempString + dest + " = " + source1 + " + " + source2 + ";\n"
 
     # Add flags
     tempString = tempString + (
@@ -165,9 +196,7 @@ def ConvertAdd(x):
         + " == 0 ? 1:1 : 0:1;\n"
         + "cf_part1:1 = "
         + dest
-        + " < "
-        + oldDest
-        + " ? 1:1 : 0:1;\n"
+        + " < oldDest? 1:1 : 0:1;\n"
         + "cf_part2:1 = "
         + dest
         + " < "
@@ -179,9 +208,7 @@ def ConvertAdd(x):
         + source2
         + " ? 1:1 : 0:1;\n"
         + "cf:1 = cf_part1:1 | cf_part2:1 | cf_part3:1;\n"
-        + "of_part1:1 = split("
-        + oldDest
-        + ", 31, 31) == split("
+        + "of_part1:1 = split(oldDest, 31, 31) == split("
         + source1
         + ", 31, 31) ? 1:1 : 0:1;\n"
         + "of_part2:1 = split("
@@ -204,20 +231,17 @@ def ConvertAdd(x):
 
 
 def ConvertAddI(x):
-    dest, source1, source2, oldDest, addr, tempString = SetupOperand32BitImmediate(x)
-    tempString = tempString + (
-        oldDest
-        + " = "
-        + dest
-        + ";\n"
-        + dest
-        + " = "
-        + source1
-        + " + "
-        + source2
-        + ";\n"
-        + SaveToOperand32BitImmediate(x, dest, source1, source2, oldDest, addr)
-    )
+    sourceList1, tempString = ConvertOperand(x[2])
+    source1 = sourceList1[0]
+
+    sourceList2, tempString = ConvertOperand(x[3], tempString)
+    source2 = sourceList2[0]
+
+    destList, tempString = ConvertOperand(x[1], tempString)
+    dest = destList[0]
+
+    tempString = tempString + "oldDest = " + dest + ";\n"
+    tempString = tempString + dest + " = " + source1 + " + " + source2 + ";\n"
 
     # Add flags
     tempString = tempString + (
@@ -226,9 +250,7 @@ def ConvertAddI(x):
         + " == 0 ? 1:1 : 0:1;\n"
         + "cf_part1:1 = "
         + dest
-        + " < "
-        + oldDest
-        + " ? 1:1 : 0:1;\n"
+        + " < oldDest? 1:1 : 0:1;\n"
         + "cf_part2:1 = "
         + dest
         + " < "
@@ -240,9 +262,7 @@ def ConvertAddI(x):
         + source2
         + " ? 1:1 : 0:1;\n"
         + "cf:1 = cf_part1:1 | cf_part2:1 | cf_part3:1;\n"
-        + "of_part1:1 = split("
-        + oldDest
-        + ", 31, 31) == split("
+        + "of_part1:1 = split(oldDest, 31, 31) == split("
         + source1
         + ", 31, 31) ? 1:1 : 0:1;\n"
         + "of_part2:1 = split("
@@ -265,20 +285,17 @@ def ConvertAddI(x):
 
 
 def ConvertSub(x):
-    dest, source1, source2, oldDest, addr, tempString = SetupOperand32BitRegister(x)
-    tempString = tempString + (
-        oldDest
-        + " = "
-        + dest
-        + ";\n"
-        + dest
-        + " = "
-        + source1
-        + " - "
-        + source2
-        + ";\n"
-        + SaveToOperand32BitRegister(x, dest, source1, source2, oldDest, addr)
-    )
+    sourceList1, tempString = ConvertOperand(x[2])
+    source1 = sourceList1[0]
+
+    sourceList2, tempString = ConvertOperand(x[3], tempString)
+    source2 = sourceList2[0]
+
+    destList, tempString = ConvertOperand(x[1], tempString)
+    dest = destList[0]
+
+    tempString = tempString + "oldDest = " + dest + ";\n"
+    tempString = tempString + dest + " = " + source1 + " - " + source2 + ";\n"
 
     # Add flags
     tempString = tempString + (
@@ -287,9 +304,7 @@ def ConvertSub(x):
         + " == 0 ? 1:1 : 0:1;\n"
         + "cf_part1:1 = "
         + dest
-        + " < "
-        + oldDest
-        + " ? 1:1 : 0:1;\n"
+        + " < oldDest? 1:1 : 0:1;\n"
         + "cf_part2:1 = "
         + dest
         + " < "
@@ -301,9 +316,7 @@ def ConvertSub(x):
         + source2
         + " ? 1:1 : 0:1;\n"
         + "cf:1 = cf_part1:1 | cf_part2:1 | cf_part3:1;\n"
-        + "of_part1:1 = split("
-        + oldDest
-        + ", 31, 31) == split("
+        + "of_part1:1 = split(oldDest, 31, 31) == split("
         + source1
         + ", 31, 31) ? 1:1 : 0:1;\n"
         + "of_part2:1 = split("
@@ -326,20 +339,17 @@ def ConvertSub(x):
 
 
 def ConvertSubI(x):
-    dest, source1, source2, oldDest, addr, tempString = SetupOperand32BitImmediate(x)
-    tempString = tempString + (
-        oldDest
-        + " = "
-        + dest
-        + ";\n"
-        + dest
-        + " = "
-        + source1
-        + " - "
-        + source2
-        + ";\n"
-        + SaveToOperand32BitImmediate(x, dest, source1, source2, oldDest, addr)
-    )
+    sourceList1, tempString = ConvertOperand(x[2])
+    source1 = sourceList1[0]
+
+    sourceList2, tempString = ConvertOperand(x[3], tempString)
+    source2 = sourceList2[0]
+
+    destList, tempString = ConvertOperand(x[1], tempString)
+    dest = destList[0]
+
+    tempString = tempString + "oldDest = " + dest + ";\n"
+    tempString = tempString + dest + " = " + source1 + " - " + source2 + ";\n"
 
     # Add flags
     tempString = tempString + (
@@ -348,9 +358,7 @@ def ConvertSubI(x):
         + " == 0 ? 1:1 : 0:1;\n"
         + "cf_part1:1 = "
         + dest
-        + " < "
-        + oldDest
-        + " ? 1:1 : 0:1;\n"
+        + " < oldDest? 1:1 : 0:1;\n"
         + "cf_part2:1 = "
         + dest
         + " < "
@@ -362,9 +370,7 @@ def ConvertSubI(x):
         + source2
         + " ? 1:1 : 0:1;\n"
         + "cf:1 = cf_part1:1 | cf_part2:1 | cf_part3:1;\n"
-        + "of_part1:1 = split("
-        + oldDest
-        + ", 31, 31) == split("
+        + "of_part1:1 = split(oldDest, 31, 31) == split("
         + source1
         + ", 31, 31) ? 1:1 : 0:1;\n"
         + "of_part2:1 = split("
@@ -387,16 +393,17 @@ def ConvertSubI(x):
 
 
 def ConvertOr(x):
-    dest, source1, source2, oldDest, addr, tempString = SetupOperand32BitRegister(x)
-    tempString = tempString + (
-        dest
-        + " = "
-        + source1
-        + " | "
-        + source2
-        + ";\n"
-        + SaveToOperand32BitRegister(x, source1, source2, dest, oldDest, addr)
-    )
+    # 32 bit or operation
+    sourceList1, tempString = ConvertOperand(x[2])
+    source1 = sourceList1[0]
+
+    sourceList2, tempString = ConvertOperand(x[3], tempString)
+    source2 = sourceList2[0]
+
+    destList, tempString = ConvertOperand(x[1], tempString)
+    dest = destList[0]
+
+    tempString = tempString + dest + " = " + source1 + " | " + source2 + ";\n"
 
     # Add flags
     tempString = tempString + (
@@ -413,187 +420,188 @@ def ConvertOr(x):
 
 
 def ConvertOrI(x):
-    dest, source1, source2, oldDest, addr, tempString = SetupOperand32BitImmediate(x)
-    tempString = tempString + (
-        dest
-        + " = "
-        + source1
-        + " | "
-        + source2
-        + ";\n"
-        + SaveToOperand32BitImmediate(x, source1, source2, dest, oldDest, addr)
-    )
+    sourceList1, tempString = ConvertOperand(x[2])
+    source1 = sourceList1[0]
 
-    # Add flags
-    tempString = tempString + (
-        "zf:1 = "
-        + dest
-        + " == 0 ? 1:1 : 0:1;\n"
-        + "cf:1 = 0:1;\n"
-        + "of:1 = 0:1;\n"
-        + "sf:1 = split("
-        + dest
-        + ", 31, 31);\n"
-    )
-    return dslparse.dslToAst(tempString)
+    sourceList2, tempString = ConvertOperand(x[3], tempString)
+    source2 = sourceList2[0]
+
+    destList, tempString = ConvertOperand(x[1], tempString)
+    dest = destList[0]
+
+    tempString = tempString + dest + " = " + source1 + " | " + source2 + ";\n"
+
+    # zf : dest == 0
+    tempString = tempString + "zf:1 = " + dest + " == 0 ? 1:1 : 0:1;\n"
+    # cf : 0
+    tempString = tempString + "cf:1 = 0:1;\n"
+    # of : 0
+    tempString = tempString + "of:1 = 0:1;\n"
+    # sf : most significant bit of dest
+    tempString = tempString + "sf:1 = split(" + dest + ", 31, 31);\n"
+
+    orAst = dslparse.dslToAst(tempString)
+    return orAst
 
 
 def ConvertAnd(x):
-    dest, source1, source2, oldDest, addr, tempString = SetupOperand32BitRegister(x)
-    tempString = tempString + (
-        dest
-        + " = "
-        + source1
-        + " & "
-        + source2
-        + ";\n"
-        + SaveToOperand32BitRegister(x, dest, source1, source2, oldDest, addr)
-    )
+    sourceList1, tempString = ConvertOperand(x[2])
+    source1 = sourceList1[0]
 
-    # Add flags
-    tempString = tempString + (
-        "zf:1 = "
-        + dest
-        + " == 0 ? 1:1 : 0:1;\n"
-        + "cf:1 = 0:1;\n"
-        + "of:1 = 0:1;\n"
-        + "sf:1 = split("
-        + dest
-        + ", 31, 31);\n"
-    )
-    return dslparse.dslToAst(tempString)
+    sourceList2, tempString = ConvertOperand(x[3], tempString)
+    source2 = sourceList2[0]
+
+    destList, tempString = ConvertOperand(x[1], tempString)
+    dest = destList[0]
+
+    tempString = tempString + dest + " = " + source1 + " & " + source2 + ";\n"
+
+    # zf : dest == 0
+    tempString = tempString + "zf:1 = " + dest + " == 0 ? 1:1 : 0:1;\n"
+    # cf : 0
+    tempString = tempString + "cf:1 = 0:1;\n"
+    # of : 0
+    tempString = tempString + "of:1 = 0:1;\n"
+    # sf : most significant bit of dest
+    tempString = tempString + "sf:1 = split(" + dest + ", 31, 31);\n"
+
+    andAst = dslparse.dslToAst(tempString)
+    return andAst
 
 
 def ConvertAndI(x):
-    dest, source1, source2, oldDest, addr, tempString = SetupOperand32BitImmediate(x)
-    tempString = tempString + (
-        dest
-        + " = "
-        + source1
-        + " & "
-        + source2
-        + ";\n"
-        + SaveToOperand32BitImmediate(x, dest, source1, source2, oldDest, addr)
-    )
+    sourceList1, tempString = ConvertOperand(x[2])
+    source1 = sourceList1[0]
 
-    # Add flags
-    tempString = tempString + (
-        "zf:1 = "
-        + dest
-        + " == 0 ? 1:1 : 0:1;\n"
-        + "cf:1 = 0:1;\n"
-        + "of:1 = 0:1;\n"
-        + "sf:1 = split("
-        + dest
-        + ", 31, 31);\n"
-    )
-    return dslparse.dslToAst(tempString)
+    sourceList2, tempString = ConvertOperand(x[3], tempString)
+    source2 = sourceList2[0]
+
+    destList, tempString = ConvertOperand(x[1], tempString)
+    dest = destList[0]
+
+    tempString = tempString + dest + " = " + source1 + " & " + source2 + ";\n"
+
+    # zf : dest == 0
+    tempString = tempString + "zf:1 = " + dest + " == 0 ? 1:1 : 0:1;\n"
+    # cf : 0
+    tempString = tempString + "cf:1 = 0:1;\n"
+    # of : 0
+    tempString = tempString + "of:1 = 0:1;\n"
+    # sf : most significant bit of dest
+    tempString = tempString + "sf:1 = split(" + dest + ", 31, 31);\n"
+
+    andAst = dslparse.dslToAst(tempString)
+    return andAst
 
 
 def ConvertXor(x):
-    dest, source1, source2, oldDest, addr, tempString = SetupOperand32BitRegister(x)
-    tempString = tempString + (
-        dest
-        + " = "
-        + source1
-        + " ^ "
-        + source2
-        + ";\n"
-        + SaveToOperand32BitRegister(x, dest, source1, source2, oldDest, addr)
-    )
+    sourceList1, tempString = ConvertOperand(x[2])
+    source1 = sourceList1[0]
 
-    # Add flags
-    tempString = tempString + (
-        "zf:1 = "
-        + dest
-        + " == 0 ? 1:1 : 0:1;\n"
-        + "cf:1 = 0:1;\n"
-        + "of:1 = 0:1;\n"
-        + "sf:1 = split("
-        + dest
-        + ", 31, 31);\n"
-    )
-    return dslparse.dslToAst(tempString)
+    sourceList2, tempString = ConvertOperand(x[3], tempString)
+    source2 = sourceList2[0]
+
+    destList, tempString = ConvertOperand(x[1], tempString)
+    dest = destList[0]
+
+    tempString = tempString + dest + " = " + source1 + " ^ " + source2 + ";\n"
+
+    # zf : dest == 0
+    tempString = tempString + "zf:1 = " + dest + " == 0 ? 1:1 : 0:1;\n"
+    # cf : 0
+    tempString = tempString + "cf:1 = 0:1;\n"
+    # of : 0
+    tempString = tempString + "of:1 = 0:1;\n"
+    # sf : most significant bit of dest
+    tempString = tempString + "sf:1 = split(" + dest + ", 31, 31);\n"
+
+    xorAst = dslparse.dslToAst(tempString)
+    return xorAst
 
 
 def ConvertXorI(x):
-    dest, source1, source2, oldDest, addr, tempString = SetupOperand32BitImmediate(x)
-    tempString = tempString + (
-        dest
-        + " = "
-        + source1
-        + " ^ "
-        + source2
-        + ";\n"
-        + SaveToOperand32BitImmediate(x, dest, source1, source2, oldDest, addr)
-    )
+    sourceList1, tempString = ConvertOperand(x[2])
+    source1 = sourceList1[0]
 
-    # Add flags
-    tempString = tempString + (
-        "zf:1 = "
-        + dest
-        + " == 0 ? 1:1 : 0:1;\n"
-        + "cf:1 = 0:1;\n"
-        + "of:1 = 0:1;\n"
-        + "sf:1 = split("
-        + dest
-        + ", 31, 31);\n"
-    )
-    return dslparse.dslToAst(tempString)
+    sourceList2, tempString = ConvertOperand(x[3], tempString)
+    source2 = sourceList2[0]
+
+    destList, tempString = ConvertOperand(x[1], tempString)
+    dest = destList[0]
+
+    tempString = tempString + dest + " = " + source1 + " ^ " + source2 + ";\n"
+
+    # zf : dest == 0
+    tempString = tempString + "zf:1 = " + dest + " == 0 ? 1:1 : 0:1;\n"
+    # cf : 0
+    tempString = tempString + "cf:1 = 0:1;\n"
+    # of : 0
+    tempString = tempString + "of:1 = 0:1;\n"
+    # sf : most significant bit of dest
+    tempString = tempString + "sf:1 = split(" + dest + ", 31, 31);\n"
+
+    xorAst = dslparse.dslToAst(tempString)
+    return xorAst
 
 
 def ConvertShrI(x):
-    dest, source1, source2, oldDest, addr, tempString = SetupOperandForShifts32BitImmediate(x)
-    tempString = tempString + (
-        dest
-        + " = "
-        + source1
-        + " >>> "
-        + source2
-        + ";\n"
-        + SaveToOperandForShifts32BitImmediate(x, dest, source1, source2, oldDest, addr)
-    )
+    # 32 bit rotate right operation
+    sourceList1, tempString = ConvertOperand(x[2])
+    source1 = sourceList1[0]
+    sourceList2, tempString = ConvertOperand(x[3])
+    source2 = sourceList2[0]
+    destList, tempString = ConvertOperand(x[1], tempString)
+    dest = destList[0]
+    tempString = tempString + dest + " = " + source1 + " >> " + source2 + ";\n"
 
-    # Add Flags
-    if int(x[3], 0) == 1:
-        tempString = tempString + "of:1 = split(" + dest + ", 31, 31) ^ split(" + dest + ", 30, 30);\n"
+    # cf : least significant bit of destination
+    tempString = (
+        tempString
+        + "cf:1 = split(oldDest, "
+        + str((int(source2, 0) - 1) % 32)
+        + ", "
+        + str((int(source2, 0) - 1) % 32)
+        + ");\n"
+    )
+    # of : if source == 1, most significant bit of old destination
+    sourceVal = int(x[3], 0)
+    if sourceVal == 1:
+        tempString = tempString + "of:1 = split(oldDest, 31, 31);\n"
     else:
         tempString = tempString + "of:1 = builtin_undef;\n"
-    tempString = tempString + (
-        "cf:1 = split("
-        + dest
-        + ", 31, 31);\n"
-        + "zf:1 = "
-        + dest
-        + " == 0 ? 1:1 : 0:1;\n"
-        + "sf:1 = split("
-        + dest
-        + ", 31, 31);\n"
-    )
 
-    return dslparse.dslToAst(tempString)
+    shrAst = dslparse.dslToAst(tempString)
+    return shrAst
 
 
 def ConvertShlI(x):
-    dest, source1, source2, oldDest, addr, tempString = SetupOperandForShifts32BitImmediate(x)
-    tempString = tempString + (
-        dest
-        + " = "
-        + source1
-        + " <<< "
-        + source2
-        + ";\n"
-        + SaveToOperandForShifts32BitImmediate(x, dest, source1, source2, oldDest, addr)
-    )
+    # 32 bit rotate left operation
+    sourceList1, tempString = ConvertOperand(x[2])
+    source1 = sourceList1[0]
+    sourceList2, tempString = ConvertOperand(x[3])
+    source2 = sourceList2[0]
+    destList, tempString = ConvertOperand(x[1], tempString)
+    dest = destList[0]
+    tempString = tempString + dest + " = " + source1 + " << " + source2 + ";\n"
 
-    # Add flags
-    tempString = tempString + "cf:1 = split(" + dest + ", 0, 0);\n"
-    if int(x[3], 0) == 1:
+    # cf : least significant bit of destination
+    tempString = (
+        tempString
+        + "cf:1 = split(oldDest, "
+        + str((int(source2, 0) + 1) % 32)
+        + ", "
+        + str((int(source2, 0) + 1) % 32)
+        + ");\n"
+    )
+    # of : if source == 1, then of = the xor of the most significant bit and cf
+    sourceVal = int(x[3], 0)
+    if sourceVal == 1:
         tempString = tempString + "of:1 = split(" + dest + ", 31, 31) ^ cf:1;\n"
     else:
         tempString = tempString + "of:1 = builtin_undef;\n"
-    tempString = tempString + ("zf:1 = " + dest + " == 0 ? 1:1 : 0:1;\n" + "sf:1 = split(" + dest + ", 31, 31);\n")
-    return dslparse.dslToAst(tempString)
+
+    shllAst = dslparse.dslToAst(tempString)
+    return shllAst
 
 
 def ConvertShr(x):
@@ -663,7 +671,16 @@ def ConvertShl(x):
 
 def ConvertLoad(x):
     dest, source, oldDest, addr, tempString = SetupOperand32BitRegister(x)
-    tempString = tempString + (dest + " = " + source + ";\n" + SaveToOperand32BitUnary(x, dest, source, oldDest, addr))
+    if IsMemory(source) or IsMemory(dest):
+        sourceList, tempString = ConvertOperand(x[2])
+        source = sourceList[0]
+        destList, tempString = ConvertOperand(x[1], tempString)
+        dest = destList[0]
+        tempString = tempString + dest + " = " + source + ";\n"
+    else:
+        tempString = tempString + (
+            dest + " = " + source + ";\n" + SaveToOperand32BitUnary(x, dest, source, oldDest, addr)
+        )
     return dslparse.dslToAst(tempString)
 
 
@@ -674,9 +691,9 @@ def ConvertLoadI(x):
 
 
 def ConvertBranchEqual(x):
-    dest, source, oldDest, addr, tempString = SetupOperand32BitRegister(x)
-    tempString = tempString + (dest + " == " + source + ";\n" + SaveToOperand32BitUnary(x, dest, source, oldDest, addr))
-    return dslparse.dslToAst(tempString)
+    # dest, source, oldDest, addr, tempString = SetupOperand32BitRegister(x)
+    # tempString = tempString + (dest + " == " + source + ";\n" + SaveToOperand32BitUnary(x, dest, source, oldDest, addr))
+    return ConvertCmpl(x)
 
 
 def ConvertBranchNotEqual(x):

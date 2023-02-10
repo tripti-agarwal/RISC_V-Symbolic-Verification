@@ -43,6 +43,7 @@ There are seven important parameters:
   6) --post: File containing the postcondition that specifies which variables have to be equivalent for p1 and p2 to be equivalent.
   
 The above example (test/RISCV_test6) verifies an assembly implementation against the reference implementation written in our DSL, using a 32-bit value memory model.
+python3 main_RISCV.py --pre test/RISCV_test6/pre --post test/RISCV_test6/post --p1 test/RISCV_test6/dsl --p1lang dsl --p2 test/RISCV_test6/asm --p2lang asm
 
 
 

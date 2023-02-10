@@ -9,12 +9,12 @@ def pushReturn(str, loc, toks):
 
 
 reg32 = (
-    pp.Combine("x0")
-    | pp.Combine("x1")
-    | pp.Combine("x2")
+    pp.Combine("x0")  # hardwired as 0
+    | pp.Combine("x1")  # return address for a call
+    | pp.Combine("x2")  # stack pointer
     | pp.Combine("x3")
     | pp.Combine("x4")
-    | pp.Combine("x5")
+    | pp.Combine("x5")  # alternate link address
     | pp.Combine("x6")
     | pp.Combine("x7")
     | pp.Combine("x8")
@@ -41,6 +41,7 @@ reg32 = (
     | pp.Combine("x29")
     | pp.Combine("x30")
     | pp.Combine("x31")
+    | pp.Combine("pc")  # this is the program counter stores address
 )
 register = reg32
 
@@ -48,8 +49,23 @@ immediate = pp.Combine(pp.Suppress("$") + pp.Literal("0x") + pp.Word(pp.hexnums)
     pp.Suppress("$") + pp.Optional("-") + pp.Word(pp.nums)
 )
 
-label = pp.Combine(pp.Literal("L$") + pp.Word(pp.alphas, pp.alphanums + "_"))
-Operands = register | immediate | label
+memory_offset = pp.Combine(pp.Optional("-") + pp.Word(pp.nums))
+memory_base = register
+memory_index = register
+memory_scale = pp.Or(["1", "2", "4", "8"])
+
+label = pp.Combine(pp.Word(pp.alphas, pp.alphanums + "_"))
+
+memory = pp.Group(
+    pp.Optional(memory_offset, default="OFFSET")
+    + pp.Suppress("(")
+    + pp.Optional(memory_base, default="BASE")
+    + pp.Optional(pp.Suppress(",") + memory_index + pp.Optional(pp.Suppress(",") + memory_scale))
+    + pp.Suppress(")")
+)
+
+
+Operands = register | immediate | label | memory
 
 UnOpInstList = pp.Word(pp.alphas)
 
@@ -59,11 +75,11 @@ BinOpInstList = pp.Word(pp.alphas)
 
 BinOpInstructions = BinOpInstList + Operands + pp.Suppress(",") + Operands + pp.Suppress(",") + Operands
 
-JumpInstList = pp.Word("j", pp.alphas)
+JumpInstList = pp.Word("j" + pp.alphas)
 
-JumpInstructions = JumpInstList + label
+JumpInstructions = JumpInstList + Operands
 
-BranchInstList = pp.Word(pp.alphas)
+BranchInstList = pp.Word("b" + pp.alphas)
 BranchInstructions = BranchInstList + Operands + pp.alphas
 RISCVInst = pp.Group(BinOpInstructions | UnOpInstructions | BranchInstructions | JumpInstructions)
 

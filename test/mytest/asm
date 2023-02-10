@@ -1,16 +1,1 @@
-        movl    -12(%rbp), %eax
-        movl    %eax, %edx
-        sarl    $13, %edx
-        movl    -12(%rbp), %eax
-        sarl    $9, %eax
-        movl    %edx, %ecx
-        xorl    %eax, %ecx
-        movl    -8(%rbp), %eax
-        movl    -12(%rbp), %edx
-        andl    %eax, %edx
-        movl    -12(%rbp), %eax
-        notl    %eax
-        andl    -4(%rbp), %eax
-        xorl    %edx, %eax
-        leal    (%rcx,%rax), %eax
-        movl    %eax, -16(%rbp)
+slli x5, x4, $2
