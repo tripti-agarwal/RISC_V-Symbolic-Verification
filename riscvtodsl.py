@@ -548,7 +548,7 @@ def ConvertShrI(x):
         dest
         + " = "
         + source1
-        + " >>> "
+        + " >> "
         + source2
         + ";\n"
         + SaveToOperandForShifts32BitImmediate(x, dest, source1, source2, oldDest, addr)
@@ -580,7 +580,7 @@ def ConvertShlI(x):
         dest
         + " = "
         + source1
-        + " <<< "
+        + " << "
         + source2
         + ";\n"
         + SaveToOperandForShifts32BitImmediate(x, dest, source1, source2, oldDest, addr)
@@ -606,7 +606,7 @@ def ConvertShr(x):
         + dest
         + " = "
         + source1
-        + " >>> "
+        + " >> "
         + source2
         + ";\n"
         + SaveToOperandForShifts32BitRegister(x, dest, source1, source2, oldDest, addr)
@@ -645,7 +645,7 @@ def ConvertShl(x):
         + dest
         + " = "
         + source1
-        + " <<< "
+        + " << "
         + source2
         + ";\n"
         + SaveToOperandForShifts32BitRegister(x, dest, source1, source2, oldDest, addr)

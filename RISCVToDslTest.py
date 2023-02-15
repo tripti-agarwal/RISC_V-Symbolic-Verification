@@ -1,7 +1,7 @@
 import riscvparse
 import riscvtodsl
 
-test = "xori x7, x7, $-1 "
+test = "xor  x10, x2, x3"
 
 insts = riscvparse.RISCVParse(test)
 print(insts)

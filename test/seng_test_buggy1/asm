@@ -1,0 +1,3 @@
+ld x2, x1
+srli x2, x2, $3
+slli x2, x2, $3

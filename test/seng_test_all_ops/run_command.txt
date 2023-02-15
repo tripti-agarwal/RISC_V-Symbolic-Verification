@@ -1,0 +1,1 @@
+python3 main_RISCV.py --pre test/seng_test_all_ops/pre --post test/seng_test_all_ops/post --p1 test/seng_test_all_ops/dsl --p1lang dsl --p2 test/seng_test_all_ops/asm --p2lang asm

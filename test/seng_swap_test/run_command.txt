@@ -1,0 +1,1 @@
+python3 main_RISCV.py --pre test/seng_swap_test/pre --post test/seng_swap_test/post --p1 test/seng_swap_test/dsl --p1lang dsl --p2 test/seng_swap_test/asm --p2lang asm

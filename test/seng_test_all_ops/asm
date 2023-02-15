@@ -1,0 +1,16 @@
+add x3, x2, x1
+sub x3, x3, x2
+or  x3, x3, x3
+and x3, x3, x3
+xor x3, x3, x3
+addi x3, x3, $80
+subi x3, x3, $79
+ori  x3, x3, $1
+andi x3, x3, $1
+xori x3, x3, $1
+li   x4, $15
+srli x4, x4, $1
+slli x4, x4, $1
+li   x5, $2
+srl  x4, x4, x5
+sll  x4, x4, x5
