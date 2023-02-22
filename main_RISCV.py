@@ -184,21 +184,21 @@ preAst, dataRegionAst = ExtractDataRegions(preAst)
 ansiCode.PrintOnThisLineBold("Constructing DAGs: ")
 dataRegionGraph, preGraph, programGraph, postGraph = GetGraphsFromAsts(dataRegionAst, preAst, p1Ast, p2Ast, postAst)
 print("\n\nProgram graphs\n\n")
-# for i in range(0, len(programGraph.vertices)):
-#     print((programGraph.vertices)[i])
-#     if ((programGraph.vertices)[i]).operands != None and (
-#         ((programGraph.vertices)[i]).name == "P2TempName" or ((programGraph.vertices)[i]).programOrigin == "P2"
-#     ):
-#         print(
-#             (programGraph.vertices)[i],
-#             ",",
-#             ((programGraph.vertices)[i]).operands[0],
-#             ",",
-#             ((programGraph.vertices)[i]).operands[1],
-#             ",",
-#             type(str(((programGraph.vertices)[i]).operator)),
-#         )
-# sprint(((programGraph.vertices)[i]).operator)
+for i in range(0, len(programGraph.vertices)):
+    print((programGraph.vertices)[i])
+    if ((programGraph.vertices)[i]).operands != None and (
+        ((programGraph.vertices)[i]).name == "P2TempName" or ((programGraph.vertices)[i]).programOrigin == "P2"
+    ):
+        print(
+            (programGraph.vertices)[i],
+            ",",
+            ((programGraph.vertices)[i]).operands[0],
+            ",",
+            ((programGraph.vertices)[i]).operands[1],
+            ",",
+            str(((programGraph.vertices)[i]).operator),
+        )
+print(((programGraph.vertices)[i]).operator)
 ansiCode.PrintOnThisLine("Preprocessing finished\n")
 
 # add dot generator to show graphs --- first do this

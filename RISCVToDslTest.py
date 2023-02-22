@@ -1,7 +1,7 @@
 import riscvparse
 import riscvtodsl
 
-test1 = "srli x3, x4, $50"
+test1 = "add x11, x4, $50"
 
 test = test1
 insts = riscvparse.RISCVParse(test)

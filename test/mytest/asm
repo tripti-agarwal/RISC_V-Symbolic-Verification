@@ -1,1 +1,1 @@
-slli x5, x4, $2
+srli x5, x4, $2

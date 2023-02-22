@@ -9,39 +9,38 @@ def pushReturn(str, loc, toks):
 
 
 reg32 = (
-    pp.Combine("x0")  # hardwired as 0
-    | pp.Combine("x1")  # return address for a call
-    | pp.Combine("x2")  # stack pointer
-    | pp.Combine("x3")
-    | pp.Combine("x4")
-    | pp.Combine("x5")  # alternate link address
-    | pp.Combine("x6")
-    | pp.Combine("x7")
-    | pp.Combine("x8")
-    | pp.Combine("x9")
-    | pp.Combine("x10")
-    | pp.Combine("x11")
-    | pp.Combine("x12")
-    | pp.Combine("x13")
-    | pp.Combine("x14")
-    | pp.Combine("x15")
-    | pp.Combine("x16")
-    | pp.Combine("x17")
-    | pp.Combine("x18")
-    | pp.Combine("x19")
-    | pp.Combine("x20")
-    | pp.Combine("x21")
-    | pp.Combine("x22")
-    | pp.Combine("x23")
-    | pp.Combine("x24")
-    | pp.Combine("x25")
-    | pp.Combine("x26")
-    | pp.Combine("x27")
-    | pp.Combine("x28")
-    | pp.Combine("x29")
+    pp.Combine("x31")
     | pp.Combine("x30")
-    | pp.Combine("x31")
-    | pp.Combine("pc")  # this is the program counter stores address
+    | pp.Combine("x29")
+    | pp.Combine("x28")
+    | pp.Combine("x27")
+    | pp.Combine("x26")
+    | pp.Combine("x25")
+    | pp.Combine("x24")
+    | pp.Combine("x23")
+    | pp.Combine("x22")
+    | pp.Combine("x21")
+    | pp.Combine("x20")
+    | pp.Combine("x19")
+    | pp.Combine("x18")
+    | pp.Combine("x17")
+    | pp.Combine("x16")
+    | pp.Combine("x15")
+    | pp.Combine("x14")
+    | pp.Combine("x13")
+    | pp.Combine("x12")
+    | pp.Combine("x11")
+    | pp.Combine("x10")
+    | pp.Combine("x9")
+    | pp.Combine("x8")
+    | pp.Combine("x7")
+    | pp.Combine("x6")
+    | pp.Combine("x5")  # alternate link address
+    | pp.Combine("x4")
+    | pp.Combine("x3")
+    | pp.Combine("x2")  # stack pointer
+    | pp.Combine("x1")  # return address for a call
+    | pp.Combine("x0")  # hardwired as 0
 )
 register = reg32
 
@@ -65,7 +64,7 @@ memory = pp.Group(
 )
 
 
-Operands = register | immediate | label | memory
+Operands = register | memory | immediate
 
 UnOpInstList = pp.Word(pp.alphas)
 
