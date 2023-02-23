@@ -39,9 +39,10 @@ def visualization(programGraph, name, destination_for_graphs):
             my_edge1 = pydot.Edge(str((programGraph.vertices)[i]), str(((programGraph.vertices)[i]).operands[0]))
             # dot.node(str((programGraph.vertices)[i]), str(((programGraph.vertices)[i]).operator))
             dot.add_edge(my_edge1)
-            my_edge2 = pydot.Edge(str((programGraph.vertices)[i]), str(((programGraph.vertices)[i]).operands[1]))
+            if len(((programGraph.vertices)[i]).operands) > 1:
+                my_edge2 = pydot.Edge(str((programGraph.vertices)[i]), str(((programGraph.vertices)[i]).operands[1]))
 
-            dot.add_edge(my_edge2)
+                dot.add_edge(my_edge2)
 
     my_networkx_graph_P1 = nx.drawing.nx_pydot.from_pydot(dot)
 
