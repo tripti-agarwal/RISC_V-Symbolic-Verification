@@ -1,12 +1,12 @@
 ld x12, x6
-ld x13, x7          
+ld x13, x7   
 srl x13, x17, $6
 srl x14, x17, $11
 srl x15, x17, $25
 xor x13, x13, x14
 xor x13, x13, x25   
 and x14, x7, x8
-xori x25, x7, $-1   
+xori x25, x7, $-1
 and x25, x25, x9
 xor x14, x25, x14
 srli x15, x10, $2
