@@ -1,0 +1,11 @@
+Attempting to create xor-swap, which will swap the values at two variables/registers
+
+1st try: p1 is not equivalent to p2 (Reason: Concrete Execution)
+This is with using the following dsl:
+a = 1;
+b = 2;
+copy = a;
+a = b;
+b = copy;
+
+2nd try: I removed the li and assignment instructions, which allowed the two codes to be equivalent.

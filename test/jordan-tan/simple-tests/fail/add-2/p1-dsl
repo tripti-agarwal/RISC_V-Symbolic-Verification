@@ -1,0 +1,4 @@
+c = a + a + b;
+a = c + b;
+b = a + c;
+d = a + b;

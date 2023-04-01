@@ -1,0 +1,13 @@
+Create an program that checks for equivalency with DSL and RISC-V "Add" instruction.
+Write documentation on what I can build and cannot build.
+Write benchmarks for all 
+Random functions are not working
+
+One program with all operators together
+One program with all shift operators such that it's equivalent dsl uses multiplication
+Add XOR register swap operation 
+
+Test RISCV_sample_in_paper
+
+For memory, it is in 32 bit
+regSize = ":32" in RISCVtodslHelper.py on line 134

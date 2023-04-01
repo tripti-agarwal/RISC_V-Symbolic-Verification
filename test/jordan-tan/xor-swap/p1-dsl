@@ -1,0 +1,3 @@
+copy = a;
+a = b;
+b = copy;

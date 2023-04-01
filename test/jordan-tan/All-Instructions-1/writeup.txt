@@ -1,0 +1,3 @@
+I first started using four variables: a, b, c, and d. However, I was not apply every single instruction to one variable.
+To keep things more simple, I decided to use two variables, a and c, and apply all instructions to one variable, c.
+This is also reflected by the RISC-V code 

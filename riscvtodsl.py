@@ -60,6 +60,7 @@ def SaveToOperandForShifts32BitImmediate(x, dest, source1, source2, oldDest, add
 
 
 def SetupOperand32BitRegister(x):
+    print(x)
     oldDest = "oldDest"
     tempString = ""
     if len(x) == 4:
@@ -79,12 +80,12 @@ def SetupOperand32BitRegister(x):
 
             return dest, source1, source2, oldDest, addr, tempString
     if len(x) == 3:
-        if Is32Register(x[1]) and Is32Register(x[2]):
-            dest = x[1]
-            source = x[2]
-            addr = ""
-
-            return dest, source, oldDest, addr, tempString
+        if Is32Register(x[1]) and (Is32Register(x[2]) or IsMemory(x[2])):
+            if (x[0] == "ld"): # is a load instruction
+                dest = x[1]
+                source = x[2]
+                addr = ""
+                return dest, source, oldDest, addr, tempString
 
 
 def SetupOperand32BitImmediate(x):

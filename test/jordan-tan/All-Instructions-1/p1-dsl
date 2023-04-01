@@ -1,0 +1,14 @@
+c = c + a;
+c = c + 8;
+c = c - a;
+c = c - 4;
+c = c & a;
+c = c & 4;
+c = c | a;
+c = c | 8;
+c = c << a;
+c = c << 8;
+c = c >> a;
+c = c >> 4;
+c = c ^ a;
+c = c ^ 4;

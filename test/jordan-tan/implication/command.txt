@@ -1,0 +1,1 @@
+python3 main_RISCV.py --pre test/jordan-tan/implication/pre --post test/jordan-tan/implication/post --p1 test/jordan-tan/implication/p1-dsl --p1lang dsl --p2 test/jordan-tan/implication/p2-asm --p2lang asm

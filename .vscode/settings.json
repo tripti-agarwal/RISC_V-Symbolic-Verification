@@ -24,5 +24,8 @@
     "workbench.tree.renderIndentGuides": false,
     "[pvs]": {
         "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}|;:'\",.<>/"
+    },
+    "files.associations": {
+        "post": "c"
     }
 }

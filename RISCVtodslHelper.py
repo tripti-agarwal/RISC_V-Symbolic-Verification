@@ -127,6 +127,17 @@ def CalculateAddress(o):
 
 
 def ConvertOperand(o, tempString="", bitlength=32):
+    """Converts 
+
+    Args:
+        o (_type_): the register
+        tempString (str, optional): . Defaults to "".
+        bitlength (int, optional): _description_. Defaults to 32.
+
+    Returns:
+        _type_: _description_
+    """    
+    print(o)
     # This is memory addressing mode.
     if isinstance(o, pp.ParseResults) or isinstance(o, list):
         retList = []
@@ -172,6 +183,7 @@ def ConvertOperand(o, tempString="", bitlength=32):
             taddrhigh = (
                 (taddr + " + 4" + regSize + " ") if newoffset == 0 else (taddr + " + " + str(newoffset + 4) + regSize)
             )
+            forceSize = 32
             while forceSize > 0:
                 forceoffset = int((forceSize - bitlength) / 8)
                 if not forceoffset == 0:

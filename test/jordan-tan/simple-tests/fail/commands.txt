@@ -1,0 +1,47 @@
+add-1:
+python3 main_RISCV.py --pre test/jordan-tan/simple-tests/fail/add-1/pre --post test/jordan-tan/simple-tests/fail/add-1/post --p1 test/jordan-tan/simple-tests/fail/add-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/simple-tests/fail/add-1/p2-asm --p2lang asm
+
+add-2:
+python3 main_RISCV.py --pre test/jordan-tan/simple-tests/fail/add-2/pre --post test/jordan-tan/simple-tests/fail/add-2/post --p1 test/jordan-tan/simple-tests/fail/add-2/p1-dsl --p1lang dsl --p2 test/jordan-tan/simple-tests/fail/add-2/p2-asm --p2lang asm
+
+addi-1:
+python3 main_RISCV.py --pre test/jordan-tan/simple-tests/fail/addi-1/pre --post test/jordan-tan/simple-tests/fail/addi-1/post --p1 test/jordan-tan/simple-tests/fail/addi-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/simple-tests/fail/addi-1/p2-asm --p2lang asm
+
+and-1:
+python3 main_RISCV.py --pre test/jordan-tan/simple-tests/fail/and-1/pre --post test/jordan-tan/simple-tests/fail/and-1/post --p1 test/jordan-tan/simple-tests/fail/and-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/simple-tests/fail/and-1/p2-asm --p2lang asm
+
+and-2:
+python3 main_RISCV.py --pre test/jordan-tan/simple-tests/fail/and-2/pre --post test/jordan-tan/simple-tests/fail/and-2/post --p1 test/jordan-tan/simple-tests/fail/and-2/p1-dsl --p1lang dsl --p2 test/jordan-tan/simple-tests/fail/and-2/p2-asm --p2lang asm
+
+andi-1:
+python3 main_RISCV.py --pre test/jordan-tan/simple-tests/fail/andi-1/pre --post test/jordan-tan/simple-tests/fail/andi-1/post --p1 test/jordan-tan/simple-tests/fail/andi-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/simple-tests/fail/andi-1/p2-asm --p2lang asm
+
+or-1:
+python3 main_RISCV.py --pre test/jordan-tan/simple-tests/fail/or-1/pre --post test/jordan-tan/simple-tests/fail/or-1/post --p1 test/jordan-tan/simple-tests/fail/or-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/simple-tests/fail/or-1/p2-asm --p2lang asm
+
+ori-1:
+python3 main_RISCV.py --pre test/jordan-tan/simple-tests/fail/ori-1/pre --post test/jordan-tan/simple-tests/fail/ori-1/post --p1 test/jordan-tan/simple-tests/fail/ori-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/simple-tests/fail/ori-1/p2-asm --p2lang asm
+
+sll-1:
+python3 main_RISCV.py --pre test/jordan-tan/simple-tests/fail/sll-1/pre --post test/jordan-tan/simple-tests/fail/sll-1/post --p1 test/jordan-tan/simple-tests/fail/sll-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/simple-tests/fail/sll-1/p2-asm --p2lang asm
+
+slli-1:
+python3 main_RISCV.py --pre test/jordan-tan/simple-tests/fail/slli-1/pre --post test/jordan-tan/simple-tests/fail/slli-1/post --p1 test/jordan-tan/simple-tests/fail/slli-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/simple-tests/fail/slli-1/p2-asm --p2lang asm
+
+srl-1:
+python3 main_RISCV.py --pre test/jordan-tan/simple-tests/fail/srl-1/pre --post test/jordan-tan/simple-tests/fail/srl-1/post --p1 test/jordan-tan/simple-tests/fail/srl-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/simple-tests/fail/srl-1/p2-asm --p2lang asm
+
+srli-1:
+python3 main_RISCV.py --pre test/jordan-tan/simple-tests/fail/srli-1/pre --post test/jordan-tan/simple-tests/fail/srli-1/post --p1 test/jordan-tan/simple-tests/fail/srli-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/simple-tests/fail/srli-1/p2-asm --p2lang asm
+
+sub-1:
+python3 main_RISCV.py --pre test/jordan-tan/simple-tests/fail/sub-1/pre --post test/jordan-tan/simple-tests/fail/sub-1/post --p1 test/jordan-tan/simple-tests/fail/sub-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/simple-tests/fail/sub-1/p2-asm --p2lang asm
+
+subi-1:
+python3 main_RISCV.py --pre test/jordan-tan/simple-tests/fail/subi-1/pre --post test/jordan-tan/simple-tests/fail/subi-1/post --p1 test/jordan-tan/simple-tests/fail/subi-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/simple-tests/fail/subi-1/p2-asm --p2lang asm
+
+xor-1:
+python3 main_RISCV.py --pre test/jordan-tan/simple-tests/fail/xor-1/pre --post test/jordan-tan/simple-tests/fail/xor-1/post --p1 test/jordan-tan/simple-tests/fail/xor-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/simple-tests/fail/xor-1/p2-asm --p2lang asm
+
+xori-1:
+python3 main_RISCV.py --pre test/jordan-tan/simple-tests/fail/xori-1/pre --post test/jordan-tan/simple-tests/fail/xori-1/post --p1 test/jordan-tan/simple-tests/fail/xori-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/simple-tests/fail/xori-1/p2-asm --p2lang asm

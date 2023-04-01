@@ -1,0 +1,44 @@
+add-1:
+python3 main_RISCV.py --pre test/jordan-tan/fixed-tests/pass/add-1/pre --post test/jordan-tan/fixed-tests/pass/add-1/post --p1 test/jordan-tan/fixed-tests/pass/add-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/fixed-tests/pass/add-1/p2-asm --p2lang asm
+
+add-2:
+python3 main_RISCV.py --pre test/jordan-tan/fixed-tests/pass/add-2/pre --post test/jordan-tan/fixed-tests/pass/add-2/post --p1 test/jordan-tan/fixed-tests/pass/add-2/p1-dsl --p1lang dsl --p2 test/jordan-tan/fixed-tests/pass/add-2/p2-asm --p2lang asm
+
+addi-1:
+python3 main_RISCV.py --pre test/jordan-tan/fixed-tests/pass/addi-1/pre --post test/jordan-tan/fixed-tests/pass/addi-1/post --p1 test/jordan-tan/fixed-tests/pass/addi-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/fixed-tests/pass/addi-1/p2-asm --p2lang asm
+
+and-1:
+python3 main_RISCV.py --pre test/jordan-tan/fixed-tests/pass/and-1/pre --post test/jordan-tan/fixed-tests/pass/and-1/post --p1 test/jordan-tan/fixed-tests/pass/and-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/fixed-tests/pass/and-1/p2-asm --p2lang asm
+
+andi-1:
+python3 main_RISCV.py --pre test/jordan-tan/fixed-tests/pass/andi-1/pre --post test/jordan-tan/fixed-tests/pass/andi-1/post --p1 test/jordan-tan/fixed-tests/pass/andi-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/fixed-tests/pass/andi-1/p2-asm --p2lang asm
+
+or-1:
+python3 main_RISCV.py --pre test/jordan-tan/fixed-tests/pass/or-1/pre --post test/jordan-tan/fixed-tests/pass/or-1/post --p1 test/jordan-tan/fixed-tests/pass/or-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/fixed-tests/pass/or-1/p2-asm --p2lang asm
+
+ori-1:
+python3 main_RISCV.py --pre test/jordan-tan/fixed-tests/pass/ori-1/pre --post test/jordan-tan/fixed-tests/pass/ori-1/post --p1 test/jordan-tan/fixed-tests/pass/ori-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/fixed-tests/pass/ori-1/p2-asm --p2lang asm
+
+sll-1:
+python3 main_RISCV.py --pre test/jordan-tan/fixed-tests/pass/sll-1/pre --post test/jordan-tan/fixed-tests/pass/sll-1/post --p1 test/jordan-tan/fixed-tests/pass/sll-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/fixed-tests/pass/sll-1/p2-asm --p2lang asm
+
+slli-1:
+python3 main_RISCV.py --pre test/jordan-tan/fixed-tests/pass/slli-1/pre --post test/jordan-tan/fixed-tests/pass/slli-1/post --p1 test/jordan-tan/fixed-tests/pass/slli-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/fixed-tests/pass/slli-1/p2-asm --p2lang asm
+
+srl-1:
+python3 main_RISCV.py --pre test/jordan-tan/fixed-tests/pass/srl-1/pre --post test/jordan-tan/fixed-tests/pass/srl-1/post --p1 test/jordan-tan/fixed-tests/pass/srl-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/fixed-tests/pass/srl-1/p2-asm --p2lang asm
+
+srli-1:
+python3 main_RISCV.py --pre test/jordan-tan/fixed-tests/pass/srli-1/pre --post test/jordan-tan/fixed-tests/pass/srli-1/post --p1 test/jordan-tan/fixed-tests/pass/srli-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/fixed-tests/pass/srli-1/p2-asm --p2lang asm
+
+sub-1:
+python3 main_RISCV.py --pre test/jordan-tan/fixed-tests/pass/sub-1/pre --post test/jordan-tan/fixed-tests/pass/sub-1/post --p1 test/jordan-tan/fixed-tests/pass/sub-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/fixed-tests/pass/sub-1/p2-asm --p2lang asm
+
+subi-1:
+python3 main_RISCV.py --pre test/jordan-tan/fixed-tests/pass/subi-1/pre --post test/jordan-tan/fixed-tests/pass/subi-1/post --p1 test/jordan-tan/fixed-tests/pass/subi-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/fixed-tests/pass/subi-1/p2-asm --p2lang asm
+
+xor-1:
+python3 main_RISCV.py --pre test/jordan-tan/fixed-tests/pass/xor-1/pre --post test/jordan-tan/fixed-tests/pass/xor-1/post --p1 test/jordan-tan/fixed-tests/pass/xor-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/fixed-tests/pass/xor-1/p2-asm --p2lang asm
+
+xori-1:
+python3 main_RISCV.py --pre test/jordan-tan/fixed-tests/pass/xori-1/pre --post test/jordan-tan/fixed-tests/pass/xori-1/post --p1 test/jordan-tan/fixed-tests/pass/xori-1/p1-dsl --p1lang dsl --p2 test/jordan-tan/fixed-tests/pass/xori-1/p2-asm --p2lang asm

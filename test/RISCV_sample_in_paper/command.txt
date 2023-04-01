@@ -1,0 +1,2 @@
+python3 main_RISCV.py --pre test/RISCV_sample_in_paper/pre --post test/RISCV_sample_in_paper/post --p1 test/RISCV_sample_in_paper/asm --p1lang asm --p2 test/RISCV_sample_in_paper/dsl --p2lang dsl
+python3 main_RISCV.py --pre test/RISCV_sample_in_paper/pre --post test/RISCV_sample_in_paper/post --p1 test/RISCV_sample_in_paper/dsl --p1lang dsl --p2 test/RISCV_sample_in_paper/asm --p2lang asm

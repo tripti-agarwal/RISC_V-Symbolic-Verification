@@ -138,7 +138,9 @@ p1String = readFile(args.p1)
 p2String = readFile(args.p2)
 postString = readFile(args.post)
 filename = args.pre.split("/")
-destination_for_graphs = filename[0] + "/" + filename[1] + "/"
+destination_for_graphs = ""
+for i in range(0, len(filename) - 1):
+    destination_for_graphs += filename[i] + "/"
 # Turn everything into dslinstruction
 ansiCode.PrintOnThisLineBold("ParsingFiles: ")
 ansiCode.Print("pre condition")

@@ -1,0 +1,1 @@
+python3 main_RISCV.py --pre test/jordan-tan/xor-swap/pre --post test/jordan-tan/xor-swap/post --p1 test/jordan-tan/xor-swap/p1-dsl --p1lang dsl --p2 test/jordan-tan/xor-swap/p2-asm --p2lang asm

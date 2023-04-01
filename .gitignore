@@ -1,0 +1,14 @@
+__pycache__
+*.pyc
+__pycache__/ansiCode.cpython-39.pyc
+__pycache__/config.cpython-39.pyc
+__pycache__/configRISCV.cpython-39.pyc
+__pycache__/depgraph.cpython-39.pyc
+__pycache__/dslinstructions.cpython-39.pyc
+__pycache__/dslparse.cpython-39.pyc
+__pycache__/mainhelperriscv.cpython-39.pyc
+__pycache__/riscvparse.cpython-39.pyc
+__pycache__/riscvtodsl.cpython-39.pyc
+__pycache__/RISCVtodslHelper.cpython-39.pyc
+__pycache__/SampleGenerator.cpython-39.pyc
+pyparse/__pycache__/pyparsing.cpython-39.pyc
