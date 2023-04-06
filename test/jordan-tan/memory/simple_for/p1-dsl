@@ -1,0 +1,4 @@
+// Add some interesting operations for better post condition
+
+for i = 1 
+    a[i] = i;
