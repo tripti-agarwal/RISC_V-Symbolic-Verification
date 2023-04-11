@@ -88,7 +88,7 @@ def SetupOperand32BitRegister(x):
             if (x[0] == "ld"): # is a load instruction
                 dest = x[1]
                 source = x[2]
-                addr = CalculateAddress(x[1]) ##### HOW CASM-Verify DOES IT####
+                addr = ""
                 return dest, source, oldDest, addr, tempString
 
 
