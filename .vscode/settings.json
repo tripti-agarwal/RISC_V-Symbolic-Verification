@@ -26,6 +26,7 @@
         "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}|;:'\",.<>/"
     },
     "files.associations": {
-        "post": "c"
+        "post": "c",
+        "p1-dsl": "c"
     }
 }

@@ -1,0 +1,11 @@
+b = 0;
+for (i from 0 to 7) {
+    c = a[i] & 1;
+    d = c << i;
+    b = b + d;
+}
+e = 0;
+for (i from 0 to 7) {
+    f = a[i] & b;
+    e = e + f;
+}

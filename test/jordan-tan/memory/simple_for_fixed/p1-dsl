@@ -1,0 +1,4 @@
+b = 0;
+for (i from 0 to 7) {
+    b = b + a[0];
+}

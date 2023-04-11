@@ -11,3 +11,5 @@ Test RISCV_sample_in_paper
 
 For memory, it is in 32 bit
 regSize = ":32" in RISCVtodslHelper.py on line 134
+
+It appears that += is not a valid dsl operator

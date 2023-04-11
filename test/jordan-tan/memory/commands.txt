@@ -1,2 +1,20 @@
 simple:
 python3 main_RISCV.py --pre test/jordan-tan/memory/simple/pre --post test/jordan-tan/memory/simple/post --p1 test/jordan-tan/memory/simple/p1-dsl --p1lang dsl --p2 test/jordan-tan/memory/simple/p2-asm --p2lang asm
+
+simple_for:
+python3 main_RISCV.py --pre test/jordan-tan/memory/simple_for/pre --post test/jordan-tan/memory/simple_for/post --p1 test/jordan-tan/memory/simple_for/p1-dsl --p1lang dsl --p2 test/jordan-tan/memory/simple_for/p2-asm --p2lang asm
+
+simple_for_2:
+python3 main_RISCV.py --pre test/jordan-tan/memory/simple_for_2/pre --post test/jordan-tan/memory/simple_for_2/post --p1 test/jordan-tan/memory/simple_for_2/p1-dsl --p1lang dsl --p2 test/jordan-tan/memory/simple_for_2/p2-asm --p2lang asm
+
+simple_for_fixed:
+python3 main_RISCV.py --pre test/jordan-tan/memory/simple_for_fixed/pre --post test/jordan-tan/memory/simple_for_fixed/post --p1 test/jordan-tan/memory/simple_for_fixed/p1-dsl --p1lang dsl --p2 test/jordan-tan/memory/simple_for_fixed/p2-asm --p2lang asm
+
+simple_for_fixed_optimized:
+python3 main_RISCV.py --pre test/jordan-tan/memory/simple_for_fixed_optimized/pre --post test/jordan-tan/memory/simple_for_fixed_optimized/post --p1 test/jordan-tan/memory/simple_for_fixed_optimized/p1-dsl --p1lang dsl --p2 test/jordan-tan/memory/simple_for_fixed_optimized/p2-asm --p2lang asm
+
+odd_even_encoding:
+python3 main_RISCV.py --pre test/jordan-tan/memory/odd_even_encoding/pre --post test/jordan-tan/memory/odd_even_encoding/post --p1 test/jordan-tan/memory/odd_even_encoding/p1-dsl --p1lang dsl --p2 test/jordan-tan/memory/odd_even_encoding/p2-asm --p2lang asm
+
+odd_even_mask_encoding:
+python3 main_RISCV.py --pre test/jordan-tan/memory/odd_even_mask_encoding/pre --post test/jordan-tan/memory/odd_even_mask_encoding/post --p1 test/jordan-tan/memory/odd_even_mask_encoding/p1-dsl --p1lang dsl --p2 test/jordan-tan/memory/odd_even_mask_encoding/p2-asm --p2lang asm
