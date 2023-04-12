@@ -1,0 +1,1 @@
+python3 main_RISCV.py --pre test/sha2rndUpdated/pre --post test/sha2rndUpdated/post --p1 test/sha2rndUpdated/p1-dsl --p1lang dsl --p2 test/sha2rndUpdated/p2-asm --p2lang asm
