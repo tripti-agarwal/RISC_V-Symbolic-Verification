@@ -47,3 +47,53 @@ addi x6, x4, $0
 addi x4, x3, $0
 // a = t1 + t2
 add x3, x19, x20
+
+// w = m[1];
+ld x22, 4(x13)
+// sigma1 = (e >> 6) ^ (e >> 11) ^ (e >> 25);
+srli x15, x8, $6
+srli x16, x8, $11
+srli x17, x8, $25
+xor x16, x16, x17
+xor x15, x15, x16
+// ch = (e & f) ^ (!e & g)
+and x16, x8, x9
+xori x17, x8, $-1
+and x17, x17, x10
+xor x16, x16, x17
+// sigma0 = (a >> 2) ^ (a >> 13) ^ (a >> 22)
+srli x17, x3, $2
+srli x18, x3, $13
+srli x19, x3, $22
+xor x18, x18, x19
+xor x17, x17, x18
+// maj = (a & b) ^ (a & c) ^ (b & c)
+and x18, x3, x4
+and x19, x3, x6
+and x20, x4, x6
+xor x19, x19, x20
+xor x18, x18, x19
+// t1 = h + sigma1 + ch + k[1] + w
+ld x21, 4(x12) 
+add x19, x21, x22
+add x19, x19, x16
+add x19, x19, x15
+add x19, x19, x11
+// t2 = sigma0 + maj
+add x20, x17, x18
+// h = g
+addi x11, x10, $0
+// g = f
+addi x10, x9, $0
+// f = e
+addi x9, x8, $0
+// e = d + t1
+add x8, x7, x19
+// d = c
+addi x7, x6, $0
+// c = b
+addi x6, x4, $0
+// b = a
+addi x4, x3, $0
+// a = t1 + t2
+add x3, x19, x20
