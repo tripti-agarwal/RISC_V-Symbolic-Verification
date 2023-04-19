@@ -1,6 +1,6 @@
-// w = m
-addi x14, x13, $0
-// sigma1 = (e >> 6) ^ (e >> 11) ^ (e >> 25)
+// w = m[0];
+ld x22, 0(x13)
+// sigma1 = (e >> 6) ^ (e >> 11) ^ (e >> 25);
 srli x15, x8, $6
 srli x16, x8, $11
 srli x17, x8, $25
@@ -8,8 +8,7 @@ xor x16, x16, x17
 xor x15, x15, x16
 // ch = (e & f) ^ (!e & g)
 and x16, x8, x9
-addi x18, x0, $-1
-xor x17, x8, x18
+xori x17, x8, $-1
 and x17, x17, x10
 xor x16, x16, x17
 // sigma0 = (a >> 2) ^ (a >> 13) ^ (a >> 22)
@@ -24,8 +23,9 @@ and x19, x3, x6
 and x20, x4, x6
 xor x19, x19, x20
 xor x18, x18, x19
-// t1 = h + sigma1 + ch + k + w
-add x19, x12, x14
+// t1 = h + sigma1 + ch + k[0] + w
+ld x21, 0(x12) 
+add x19, x21, x22
 add x19, x19, x16
 add x19, x19, x15
 add x19, x19, x11

@@ -1,0 +1,1 @@
+python3 main_RISCV.py --pre test/jordan-tan/CASM-Verify-tests/sha2rnd_memory/pre --post test/jordan-tan/CASM-Verify-tests/sha2rnd_memory/post --p1 test/jordan-tan/CASM-Verify-tests/sha2rnd_memory/p1-dsl --p1lang dsl --p2 test/jordan-tan/CASM-Verify-tests/sha2rnd_memory/p2-asm --p2lang asm
